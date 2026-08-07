@@ -1,0 +1,35 @@
+:root {
+  /* Radius */
+
+  --radius-xs: 6px;
+
+  --radius-sm: 10px;
+
+  --radius-md: 14px;
+
+  --radius-lg: 20px;
+
+  --radius-xl: 32px;
+
+  /* Shadow */
+
+  --shadow-xs: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  --shadow-md: 0 14px 32px rgba(0, 0, 0, 0.12);
+
+  /* Layout */
+
+  --container-width: 1280px;
+
+  --header-height: 72px;
+
+  /* Motion */
+
+  --transition-fast: 0.15s ease;
+
+  --transition-normal: 0.25s ease;
+
+  --transition-slow: 0.35s ease;
+}

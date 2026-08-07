@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # SegundaChance
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.3.
@@ -85,6 +86,29 @@ O projeto busca implementar uma aplicação completa contendo:
 - documentação da API;
 - testes automatizados;
 - containerização utilizando Docker.
+=======
+# Segunda Chance
+
+Sistema web desenvolvido como projeto para processo seletivo de estágio, com foco em arquitetura moderna, boas práticas de desenvolvimento e experiência do usuário.
+
+O objetivo da plataforma é facilitar a compra, venda e doação de produtos entre usuários por meio de anúncios, solicitações e autenticação segura.
+
+---
+
+## Desenvolvedor
+
+**João Victor Martins Cid**
+
+Projeto desenvolvido individualmente.
+
+---
+
+# Objetivo
+
+O Segunda Chance busca incentivar a reutilização de produtos, permitindo que usuários anunciem itens para venda ou doação de maneira simples, organizada e segura.
+
+Além de atender aos requisitos do processo seletivo, o projeto foi planejado para servir como peça de portfólio, adotando padrões utilizados em aplicações profissionais.
+>>>>>>> 6b2f2366fa45ff65055fd1b7dec9f3b4a1d65262
 
 ---
 
@@ -92,6 +116,7 @@ O projeto busca implementar uma aplicação completa contendo:
 
 ## Backend
 
+<<<<<<< HEAD
 - Java 21
 - Spring Boot 4.1
 - Spring Security
@@ -99,10 +124,20 @@ O projeto busca implementar uma aplicação completa contendo:
 - Spring Data JPA
 - Hibernate
 - MySQL
+=======
+- Java 25
+- Spring Boot
+- Spring Security
+- JWT Authentication
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+>>>>>>> 6b2f2366fa45ff65055fd1b7dec9f3b4a1d65262
 - Maven
 
 ## Frontend
 
+<<<<<<< HEAD
 - Angular
 - TypeScript
 - HTML
@@ -198,11 +233,94 @@ Além disso, foram adotados os padrões:
 - Cadastro de imagens
 - Associação com anúncios
 - Definição automática da imagem principal
+=======
+- Angular 20
+- TypeScript
+- Angular Router
+- Angular Signals
+- SCSS
+- Angular HttpClient
+
+---
+
+# Estrutura do Projeto
+
+```
+Segunda-Chance-main
+│
+├── backend/
+│   ├── src/
+│   ├── pom.xml
+│   └── segunda_chance.sql
+│
+├── frontend/
+│   └── Estrutura inicial Angular
+│
+├── docs/
+│
+└── README.md
+```
+
+---
+
+# Status do Projeto
+
+## Backend
+
+Status: Concluído
+
+Implementações realizadas:
+
+- Autenticação JWT
+- Cadastro e login de usuários
+- CRUD completo de usuários
+- CRUD completo de categorias
+- CRUD completo de anúncios
+- CRUD completo de solicitações
+- CRUD completo de imagens dos anúncios
+- Controle de autorização baseado em proprietário
+- Tratamento global de exceções
+- Validações de regras de negócio
+- Paginação
+- Ordenação
+- Filtros utilizando Spring Specification
+- Imagem principal do anúncio
+- Testes manuais completos utilizando Postman
+
+---
+
+## Frontend
+
+Status: Em desenvolvimento
+
+Estrutura inicial criada.
+
+Atualmente o projeto possui a organização base para implementação das telas e da arquitetura da aplicação.
+
+Estrutura planejada:
+
+```
+frontend
+│
+└── src
+    └── app
+        ├── core
+        ├── shared
+        ├── features
+        ├── layouts
+        ├── guards
+        ├── interceptors
+        ├── models
+        ├── services
+        └── pages
+```
+>>>>>>> 6b2f2366fa45ff65055fd1b7dec9f3b4a1d65262
 
 ---
 
 # Próximas Etapas
 
+<<<<<<< HEAD
 O projeto continua em desenvolvimento.
 
 Os próximos objetivos incluem:
@@ -263,3 +381,170 @@ O backend encontra-se em fase avançada de desenvolvimento, com aproximadamente 
 
 O frontend será iniciado após a finalização dos últimos ajustes do backend.
 >>>>>>> a0e8ea50291200481d9acb1886e61341146ed221
+=======
+## Fase 1
+
+- Integração Angular com API REST
+- Sistema de autenticação
+- AuthGuard
+- Interceptor JWT
+- Serviços HTTP
+
+## Fase 2
+
+- Landing Page
+- Tela de Login
+- Tela de Cadastro
+- Listagem de anúncios
+- Detalhes do anúncio
+
+## Fase 3
+
+- Criar anúncio
+- Editar anúncio
+- Perfil
+- Meus anúncios
+- Solicitações enviadas
+- Solicitações recebidas
+
+## Fase 4
+
+- Responsividade completa
+- Progressive Web App (PWA)
+- Ajustes visuais
+- Documentação final
+
+---
+
+# Arquitetura de Rotas
+
+## Públicas
+
+```
+/
+├── Landing Page
+
+/login
+
+/register
+
+/ads
+
+/ads/:id
+
+/about
+
+/404
+```
+
+## Protegidas
+
+```
+/profile
+
+/profile/edit
+
+/my-ads
+
+/ads/create
+
+/ads/edit/:id
+
+/requests
+
+/requests/sent
+
+/requests/received
+```
+
+---
+
+# Arquitetura da Aplicação
+
+O projeto segue separação por camadas.
+
+## Backend
+
+```
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Database
+```
+
+## Frontend
+
+```
+Pages
+
+↓
+
+Components
+
+↓
+
+Services
+
+↓
+
+HTTP Client
+
+↓
+
+Backend REST
+```
+
+---
+
+# Diferenciais Implementados
+
+- JWT Stateless Authentication
+- Autorização baseada em proprietário do recurso
+- DTOs para entrada e saída
+- Regras de negócio isoladas na camada de serviço
+- Filtros dinâmicos com Specification
+- Paginação e ordenação
+- Tratamento global de exceções
+- Estrutura preparada para evolução da aplicação
+
+---
+
+# Próximos Diferenciais
+
+- Progressive Web App
+- Deploy
+- Melhorias de UX/UI
+- Dashboard do usuário
+- Upload de imagens
+- Busca avançada
+- Tema claro e escuro
+
+---
+
+# Estado Atual
+
+Backend:
+- Concluído
+- Testado
+- Preparado para integração
+
+Frontend:
+- Estrutura inicial criada
+- Arquitetura definida
+- Desenvolvimento em andamento
+
+---
+
+## Licença
+
+Projeto desenvolvido exclusivamente para fins acadêmicos, avaliação técnica e composição de portfólio.
+>>>>>>> 6b2f2366fa45ff65055fd1b7dec9f3b4a1d65262

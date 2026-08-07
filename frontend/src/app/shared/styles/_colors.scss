@@ -1,0 +1,53 @@
+:root {
+  /* ==========
+     BRAND
+     ========== */
+
+  --sc-primary: #0f7dbb;
+  --sc-primary-hover: #0e7abd;
+
+  --sc-primary-dark: #1d35a6;
+  --sc-primary-deep: #2042b5;
+
+  --sc-secondary: #3e8bcf;
+  --sc-secondary-dark: #447db7;
+
+  --sc-primary-light: #aec8dd;
+  --sc-primary-soft: #dcebf7;
+
+  /* ==========
+     NEUTROS
+     ========== */
+
+  --sc-white: #ffffff;
+
+  --sc-background: #f7f9fc;
+
+  --sc-surface: #ffffff;
+
+  --sc-border: #d9e2ec;
+
+  --sc-divider: #e9eef3;
+
+  /* ==========
+     TEXTOS
+     ========== */
+
+  --sc-text: #172033;
+
+  --sc-text-light: #5b6474;
+
+  --sc-text-muted: #8c96a8;
+
+  /* ==========
+     FEEDBACK
+     ========== */
+
+  --sc-success: #2e8b57;
+
+  --sc-warning: #e8a317;
+
+  --sc-danger: #d64545;
+
+  --sc-info: var(--sc-primary);
+}
