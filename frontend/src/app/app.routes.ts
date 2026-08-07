@@ -1,49 +1,73 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth-guard';
+
 export const routes: Routes = [
-  // Landing
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+
+  {
+    path: 'welcome',
     loadComponent: () => import('./features/landing/pages/landing/landing').then((m) => m.Landing),
     title: 'Segunda Chance',
   },
 
-  // Autenticação
+  // Layout de autenticação
   {
-    path: 'login',
-    loadComponent: () => import('./features/auth/pages/login/login').then((m) => m.Login),
-    title: 'Login | Segunda Chance',
-  },
-  {
-    path: 'register',
-    loadComponent: () => import('./features/auth/pages/register/register').then((m) => m.Register),
-    title: 'Cadastro | Segunda Chance',
+    path: '',
+    loadComponent: () => import('./features/auth/auth-layout').then((m) => m.AuthLayout),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/pages/login/login').then((m) => m.Login),
+        title: 'Login | Segunda Chance',
+      },
+
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./features/auth/pages/register/register').then((m) => m.Register),
+        title: 'Cadastro | Segunda Chance',
+      },
+    ],
   },
 
   // Anúncios
   {
     path: 'ads',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/ads/pages/ads-list/ads-list').then((m) => m.AdsList),
     title: 'Anúncios | Segunda Chance',
   },
+
   {
     path: 'ads/create',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/ads/pages/ad-create/ad-create').then((m) => m.AdCreate),
     title: 'Criar anúncio | Segunda Chance',
   },
+
   {
     path: 'ads/edit/:id',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/ads/pages/ad-edit/ad-edit').then((m) => m.AdEdit),
     title: 'Editar anúncio | Segunda Chance',
   },
+
   {
     path: 'ads/:id',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/ads/pages/ad-details/ad-details').then((m) => m.AdDetails),
     title: 'Detalhes do anúncio | Segunda Chance',
   },
+
   {
     path: 'my-ads',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/ads/pages/my-ads/my-ads').then((m) => m.MyAds),
     title: 'Meus anúncios | Segunda Chance',
   },
@@ -51,11 +75,14 @@ export const routes: Routes = [
   // Perfil
   {
     path: 'profile',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/profile/pages/profile/profile').then((m) => m.Profile),
     title: 'Meu perfil | Segunda Chance',
   },
+
   {
     path: 'profile/edit',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/profile/pages/profile-edit/profile-edit').then((m) => m.ProfileEdit),
     title: 'Editar perfil | Segunda Chance',
@@ -64,20 +91,25 @@ export const routes: Routes = [
   // Solicitações
   {
     path: 'requests',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/requests/pages/requests-dashboard/requests-dashboard').then(
         (m) => m.RequestsDashboard,
       ),
     title: 'Solicitações | Segunda Chance',
   },
+
   {
     path: 'requests/sent',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/requests/pages/requests-sent/requests-sent').then((m) => m.RequestsSent),
     title: 'Solicitações enviadas | Segunda Chance',
   },
+
   {
     path: 'requests/received',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/requests/pages/requests-received/requests-received').then(
         (m) => m.RequestsReceived,
@@ -99,7 +131,6 @@ export const routes: Routes = [
     title: 'Página não encontrada | Segunda Chance',
   },
 
-  // Qualquer endereço inexistente
   {
     path: '**',
     redirectTo: '404',

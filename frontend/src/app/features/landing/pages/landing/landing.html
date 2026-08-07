@@ -1,1 +1,197 @@
-<p>landing works!</p>
+<app-header />
+
+<main>
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-copy">
+        <span class="eyebrow"> Marketplace da comunidade universitária </span>
+
+        <h1>Dê uma nova vida ao que você não usa.</h1>
+
+        <p>
+          Compre, venda ou doe itens dentro da comunidade acadêmica de forma simples, organizada e
+          consciente.
+        </p>
+
+        <form class="hero-search" (submit)="$event.preventDefault(); search(searchInput.value)">
+          <label class="sr-only" for="landing-search"> Buscar itens </label>
+
+          <input
+            #searchInput
+            id="landing-search"
+            type="search"
+            placeholder="Buscar livros, eletrônicos, materiais..."
+          />
+
+          <button type="submit">Buscar</button>
+        </form>
+
+        <div class="hero-actions">
+          <a routerLink="/ads" class="primary-action"> Explorar anúncios </a>
+
+          <a routerLink="/register" class="secondary-action"> Criar minha conta </a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="circle circle-one"></div>
+        <div class="circle circle-two"></div>
+
+        <div class="cycle-card">
+          <span class="cycle-symbol">S</span>
+
+          <strong>Segunda Chance</strong>
+
+          <span> Uma nova vida para cada objeto. </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"> Explore </span>
+
+          <h2>Encontre por categoria</h2>
+        </div>
+
+        <a routerLink="/ads"> Ver todos </a>
+      </div>
+
+      <div class="categories-grid">
+        @for (category of categories; track category) {
+          <button type="button" class="category-card" (click)="openCategory(category)">
+            <span class="category-icon"> ↻ </span>
+
+            <span>
+              {{ category }}
+            </span>
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="recent-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"> Descubra </span>
+
+          <h2>Anúncios recentes</h2>
+        </div>
+
+        <a routerLink="/ads"> Ver todos os anúncios </a>
+      </div>
+
+      <div class="ads-grid">
+        <article class="ad-card">
+          <div class="ad-image placeholder-image">Livro</div>
+
+          <div class="ad-content">
+            <span class="ad-category"> Livros </span>
+
+            <h3>Cálculo Volume 1</h3>
+
+            <strong class="ad-price"> R$ 45,00 </strong>
+          </div>
+        </article>
+
+        <article class="ad-card">
+          <div class="ad-image placeholder-image">Eletrônico</div>
+
+          <div class="ad-content">
+            <span class="ad-category"> Eletrônicos </span>
+
+            <h3>Calculadora científica</h3>
+
+            <strong class="ad-price"> R$ 70,00 </strong>
+          </div>
+        </article>
+
+        <article class="ad-card">
+          <div class="ad-image placeholder-image">Doação</div>
+
+          <div class="ad-content">
+            <span class="ad-category"> Materiais acadêmicos </span>
+
+            <h3>Apostilas de programação</h3>
+
+            <strong class="ad-price donation"> Doação </strong>
+          </div>
+        </article>
+
+        <article class="ad-card">
+          <div class="ad-image placeholder-image">Informática</div>
+
+          <div class="ad-content">
+            <span class="ad-category"> Informática </span>
+
+            <h3>Teclado USB</h3>
+
+            <strong class="ad-price"> R$ 55,00 </strong>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="purpose-section">
+    <div class="container purpose-content">
+      <div>
+        <span class="eyebrow"> Economia circular </span>
+
+        <h2>Um objeto parado pode ser útil para outra pessoa.</h2>
+      </div>
+
+      <div class="purpose-items">
+        <div>
+          <strong>01</strong>
+          <span>Anuncie</span>
+        </div>
+
+        <div>
+          <strong>02</strong>
+          <span>Conecte-se</span>
+        </div>
+
+        <div>
+          <strong>03</strong>
+          <span>Reutilize</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container cta-content">
+      <div>
+        <h2>Tem algo que não usa mais?</h2>
+
+        <p>Transforme um item parado em uma nova oportunidade para alguém.</p>
+      </div>
+
+      <a routerLink="/ads/create"> Anunciar item </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <div>
+      <strong> Segunda Chance </strong>
+
+      <p>Plataforma universitária de compra, venda e doação de objetos usados.</p>
+    </div>
+
+    <nav aria-label="Links do rodapé">
+      <a routerLink="/ads"> Anúncios </a>
+
+      <a routerLink="/about"> Sobre </a>
+
+      <a routerLink="/login"> Entrar </a>
+    </nav>
+  </div>
+</footer>

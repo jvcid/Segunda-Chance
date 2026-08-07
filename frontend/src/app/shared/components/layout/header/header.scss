@@ -1,0 +1,150 @@
+:host {
+  display: block;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  width: 100%;
+  height: var(--header-height);
+
+  background: var(--sc-surface);
+  border-bottom: 1px solid var(--sc-border);
+}
+
+.header-container {
+  width: min(calc(100% - (var(--space-8) * 2)), var(--container-width));
+
+  height: 100%;
+  margin-inline: auto;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 40px;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+
+  margin-left: auto;
+
+  a {
+    position: relative;
+
+    padding-block: var(--space-2);
+
+    color: var(--sc-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--sc-primary);
+    }
+
+    &.active {
+      color: var(--sc-primary);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    &.active::after {
+      content: '';
+
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+
+      height: 2px;
+
+      background: var(--sc-primary);
+      border-radius: 999px;
+    }
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.btn-primary,
+.btn-ghost {
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-inline: var(--space-5);
+
+  border-radius: var(--radius-sm);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.btn-primary {
+  color: var(--sc-white);
+  background: var(--sc-primary);
+  border: 1px solid var(--sc-primary);
+
+  &:hover {
+    color: var(--sc-white);
+    background: var(--sc-primary-hover);
+  }
+}
+
+.btn-ghost {
+  color: var(--sc-primary);
+  background: transparent;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--sc-primary-soft);
+  }
+}
+
+button.btn-ghost {
+  cursor: pointer;
+}
+
+/*
+ * Implementaremos o comportamento mobile completo
+ * na etapa obrigatória de responsividade.
+ *
+ * Por enquanto esta regra evita quebra grave
+ * em telas menores.
+ */
+@media (max-width: 900px) {
+  .navigation {
+    display: none;
+  }
+
+  .header-container {
+    width: calc(100% - var(--space-8));
+  }
+}

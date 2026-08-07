@@ -1,0 +1,33 @@
+<header class="site-header">
+  <div class="header-container">
+    <a routerLink="/" class="brand" aria-label="Segunda Chance - início">
+      <img src="/brand/logo-horizontal.svg" alt="Segunda Chance" class="brand-logo" />
+    </a>
+
+    <nav class="navigation" aria-label="Navegação principal">
+      <a routerLink="/ads" routerLinkActive="active"> Explorar </a>
+
+      @if (isLoggedIn()) {
+        <a routerLink="/my-ads" routerLinkActive="active"> Meus anúncios </a>
+
+        <a routerLink="/requests" routerLinkActive="active"> Solicitações </a>
+
+        <a routerLink="/profile" routerLinkActive="active"> Perfil </a>
+      } @else {
+        <a routerLink="/about" routerLinkActive="active"> Sobre </a>
+      }
+    </nav>
+
+    <div class="header-actions">
+      @if (isLoggedIn()) {
+        <a routerLink="/ads/create" class="btn-primary"> Anunciar item </a>
+
+        <button type="button" class="btn-ghost" (click)="logout()">Sair</button>
+      } @else {
+        <a routerLink="/login" class="btn-ghost"> Entrar </a>
+
+        <a routerLink="/register" class="btn-primary"> Criar conta </a>
+      }
+    </div>
+  </div>
+</header>
