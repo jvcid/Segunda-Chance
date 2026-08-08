@@ -5,7 +5,7 @@ import { authGuard } from './core/guards/auth-guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'welcome',
     pathMatch: 'full',
   },
 
@@ -36,13 +36,15 @@ export const routes: Routes = [
   },
 
   // Anúncios
+
+  // Listagem pública
   {
     path: 'ads',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/ads/pages/ads-list/ads-list').then((m) => m.AdsList),
     title: 'Anúncios | Segunda Chance',
   },
 
+  // Criar exige login
   {
     path: 'ads/create',
     canActivate: [authGuard],
@@ -50,6 +52,7 @@ export const routes: Routes = [
     title: 'Criar anúncio | Segunda Chance',
   },
 
+  // Editar exige login
   {
     path: 'ads/edit/:id',
     canActivate: [authGuard],
@@ -57,14 +60,15 @@ export const routes: Routes = [
     title: 'Editar anúncio | Segunda Chance',
   },
 
+  // Detalhes são públicos
   {
     path: 'ads/:id',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/ads/pages/ad-details/ad-details').then((m) => m.AdDetails),
     title: 'Detalhes do anúncio | Segunda Chance',
   },
 
+  // Meus anúncios exige login
   {
     path: 'my-ads',
     canActivate: [authGuard],

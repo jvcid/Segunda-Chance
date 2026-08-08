@@ -1,1 +1,217 @@
-<p>ads-list works!</p>
+<app-header />
+
+<main class="ads-page">
+  <!-- HERO -->
+  <section class="ads-hero">
+    <div class="container">
+      <span class="eyebrow">Marketplace da comunidade</span>
+
+      <h1>Encontre algo que possa ganhar uma nova história.</h1>
+
+      <p>
+        Explore livros, eletrônicos, materiais acadêmicos e outros itens anunciados pela comunidade.
+      </p>
+
+      <form class="search-bar" (submit)="$event.preventDefault(); search(searchInput.value)">
+        <input
+          #searchInput
+          type="search"
+          [value]="searchTerm()"
+          placeholder="Buscar por título..."
+          aria-label="Buscar anúncios"
+        />
+
+        <button type="submit">Buscar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FILTROS -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-panel">
+        <div class="filters-header">
+          <div>
+            <span class="eyebrow">Refine sua busca</span>
+
+            <h2>Filtros</h2>
+          </div>
+
+          @if (searchTerm() || selectedCategory() || selectedType()) {
+            <button type="button" class="clear-button" (click)="clearFilters()">
+              Limpar filtros
+            </button>
+          }
+        </div>
+
+        <!-- Categoria -->
+        <div class="filters-row">
+          <span class="filter-label"> Categoria </span>
+
+          <div class="filter-options">
+            <button
+              type="button"
+              [class.active]="selectedCategory() === ''"
+              (click)="selectedCategory.set(''); loadAds(0)"
+            >
+              Todas
+            </button>
+
+            @for (category of categories; track category) {
+              <button
+                type="button"
+                [class.active]="selectedCategory() === category"
+                (click)="filterByCategory(category)"
+              >
+                {{ category }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Tipo -->
+        <div class="filters-row">
+          <span class="filter-label"> Tipo </span>
+
+          <div class="filter-options">
+            <button type="button" [class.active]="selectedType() === ''" (click)="filterByType('')">
+              Todos
+            </button>
+
+            <button
+              type="button"
+              [class.active]="selectedType() === 'VENDA'"
+              (click)="filterByType('VENDA')"
+            >
+              Venda
+            </button>
+
+            <button
+              type="button"
+              [class.active]="selectedType() === 'DOACAO'"
+              (click)="filterByType('DOACAO')"
+            >
+              Doação
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section class="results-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"> Explorar </span>
+
+          <h2>Anúncios disponíveis</h2>
+        </div>
+
+        @if (!isLoading() && !hasError()) {
+          <span class="result-count"> {{ ads().length }} item(ns) nesta página </span>
+        }
+      </div>
+
+      <!-- LOADING -->
+      @if (isLoading()) {
+        <div class="state-card">
+          <div class="spinner"></div>
+
+          <p>Carregando anúncios...</p>
+        </div>
+
+        <!-- ERRO -->
+      } @else if (hasError()) {
+        <div class="state-card">
+          <h3>Não foi possível carregar os anúncios.</h3>
+
+          <p>Tente novamente em alguns instantes.</p>
+
+          <button type="button" (click)="loadAds(currentPage())">Tentar novamente</button>
+        </div>
+
+        <!-- VAZIO -->
+      } @else if (ads().length === 0) {
+        <div class="state-card">
+          <h3>Nenhum anúncio encontrado.</h3>
+
+          <p>Tente alterar os filtros ou realizar uma nova busca.</p>
+
+          <button type="button" (click)="clearFilters()">Limpar filtros</button>
+        </div>
+
+        <!-- ANÚNCIOS -->
+      } @else {
+        <div class="ads-grid">
+          @for (ad of ads(); track ad.id) {
+            <article
+              class="ad-card"
+              tabindex="0"
+              (click)="openAd(ad.id)"
+              (keyup.enter)="openAd(ad.id)"
+            >
+              <div class="ad-image">
+                @if (ad.imagemPrincipalUrl) {
+                  <img [src]="ad.imagemPrincipalUrl" [alt]="ad.titulo" />
+                } @else {
+                  <div class="image-placeholder">
+                    {{ ad.categoryName }}
+                  </div>
+                }
+              </div>
+
+              <div class="ad-content">
+                <div class="ad-meta">
+                  <span class="category">
+                    {{ ad.categoryName }}
+                  </span>
+
+                  <span class="type" [class.donation]="ad.tipo === 'DOACAO'">
+                    {{ ad.tipo === 'DOACAO' ? 'Doação' : 'Venda' }}
+                  </span>
+                </div>
+
+                <h3>
+                  {{ ad.titulo }}
+                </h3>
+
+                <p>
+                  {{ ad.descricao }}
+                </p>
+
+                <div class="ad-footer">
+                  <strong [class.donation]="ad.tipo === 'DOACAO'">
+                    {{ formatPrice(ad) }}
+                  </strong>
+
+                  <span aria-hidden="true"> → </span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- PAGINAÇÃO -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button type="button" [disabled]="currentPage() === 0" (click)="previousPage()">
+              Anterior
+            </button>
+
+            <span> Página {{ currentPage() + 1 }} de {{ totalPages() }} </span>
+
+            <button
+              type="button"
+              [disabled]="currentPage() + 1 >= totalPages()"
+              (click)="nextPage()"
+            >
+              Próxima
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </section>
+</main>

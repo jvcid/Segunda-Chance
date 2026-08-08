@@ -13,9 +13,10 @@ export class AuthService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = 'http://localhost:8080/api/auth';
+
   private readonly tokenKey = 'segunda_chance_token';
 
-  private readonly authenticated = signal(this.getToken() !== null);
+  private readonly authenticated = signal(this.hasValidToken());
 
   readonly isLoggedIn = this.authenticated.asReadonly();
 
@@ -34,6 +35,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+
     this.authenticated.set(false);
   }
 
@@ -42,10 +44,50 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.getToken() !== null;
+    return this.hasValidToken();
   }
 
   private saveToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+  }
+
+  private hasValidToken(): boolean {
+    const token = this.getToken();
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+
+      if (!payloadBase64) {
+        this.logout();
+        return false;
+      }
+
+      const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+
+      const payload = JSON.parse(payloadJson);
+
+      const expiration = payload.exp as number | undefined;
+
+      if (!expiration) {
+        this.logout();
+        return false;
+      }
+
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      if (expiration <= currentTime) {
+        this.logout();
+        return false;
+      }
+
+      return true;
+    } catch {
+      this.logout();
+      return false;
+    }
   }
 }

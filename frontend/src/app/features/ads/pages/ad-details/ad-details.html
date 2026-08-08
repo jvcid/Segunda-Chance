@@ -1,1 +1,194 @@
-<p>ad-details works!</p>
+<app-header />
+
+<main class="details-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/welcome">Início</a>
+
+      <span>/</span>
+
+      <a routerLink="/ads">Anúncios</a>
+
+      @if (ad()) {
+        <span>/</span>
+
+        <span>
+          {{ ad()!.titulo }}
+        </span>
+      }
+    </nav>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando anúncio...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="state-card">
+        <h2>Não foi possível carregar este anúncio.</h2>
+
+        <p>Tente novamente em alguns instantes.</p>
+
+        <button type="button" (click)="loadAd(ad()?.id ?? 0)">Tentar novamente</button>
+      </div>
+    } @else if (ad(); as currentAd) {
+      <section class="details-grid">
+        <!-- IMAGEM -->
+        <div class="product-gallery">
+          <div class="main-image">
+            @if (currentAd.imagemPrincipalUrl) {
+              <img [src]="currentAd.imagemPrincipalUrl" [alt]="currentAd.titulo" />
+            } @else {
+              <div class="image-placeholder">
+                <span>
+                  {{ currentAd.categoryName }}
+                </span>
+
+                <small> Imagem não disponível </small>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- INFORMAÇÕES -->
+        <article class="product-info">
+          <div class="product-meta">
+            <span class="category">
+              {{ currentAd.categoryName }}
+            </span>
+
+            <span class="type" [class.donation]="currentAd.tipo === 'DOACAO'">
+              {{ currentAd.tipo === 'DOACAO' ? 'Doação' : 'Venda' }}
+            </span>
+          </div>
+
+          <h1>
+            {{ currentAd.titulo }}
+          </h1>
+
+          <div class="price" [class.donation]="currentAd.tipo === 'DOACAO'">
+            {{ formatPrice(currentAd) }}
+          </div>
+
+          <div class="description">
+            <h2>Sobre este item</h2>
+
+            <p>
+              {{ currentAd.descricao }}
+            </p>
+          </div>
+
+          <div class="owner-card">
+            <span class="owner-label"> Anunciado por </span>
+
+            <strong>
+              {{ currentAd.userName }}
+            </strong>
+          </div>
+
+          <div class="status-row">
+            <span>Status</span>
+
+            <strong>
+              {{ currentAd.status }}
+            </strong>
+          </div>
+
+          <!-- BOTÃO DE INTERESSE -->
+          <button type="button" class="interest-button" (click)="requestItem()">
+            @if (currentAd.tipo === 'DOACAO') {
+              Tenho interesse
+            } @else {
+              Quero este item
+            }
+          </button>
+
+          @if (!isLoggedIn()) {
+            <p class="login-note">Você precisará entrar na sua conta para demonstrar interesse.</p>
+          }
+
+          <!-- SUCESSO -->
+          @if (requestSuccess()) {
+            <div class="request-success" role="status">
+              <div>
+                <strong> Solicitação enviada. </strong>
+
+                <span> O anunciante poderá visualizar sua mensagem. </span>
+              </div>
+
+              <a routerLink="/requests/sent"> Ver enviadas </a>
+            </div>
+          }
+
+          <!-- ERRO -->
+          @if (requestError()) {
+            <div class="request-error" role="alert">
+              {{ requestError() }}
+            </div>
+          }
+
+          <!-- FORMULÁRIO DE SOLICITAÇÃO -->
+          @if (showRequestForm()) {
+            <div class="request-panel">
+              <div class="request-heading">
+                <span class="request-eyebrow"> Demonstrar interesse </span>
+
+                <h3>Envie uma mensagem ao anunciante</h3>
+
+                <p>Apresente-se brevemente e diga por que tem interesse no item.</p>
+              </div>
+
+              <form [formGroup]="requestForm" (ngSubmit)="sendRequest()">
+                <textarea
+                  formControlName="mensagem"
+                  rows="5"
+                  maxlength="500"
+                  placeholder="Ex.: Olá! Tenho interesse neste item. Ele ainda está disponível?"
+                ></textarea>
+
+                <div class="request-field-footer">
+                  <div>
+                    @if (
+                      requestForm.controls.mensagem.touched &&
+                      requestForm.controls.mensagem.hasError('required')
+                    ) {
+                      <span class="field-error"> Escreva uma mensagem. </span>
+                    }
+                  </div>
+
+                  <span> {{ requestForm.controls.mensagem.value.length }}/500 </span>
+                </div>
+
+                <div class="request-actions">
+                  <button type="button" class="cancel-request" (click)="cancelRequest()">
+                    Cancelar
+                  </button>
+
+                  <button type="submit" class="send-request" [disabled]="isSendingRequest()">
+                    @if (isSendingRequest()) {
+                      Enviando...
+                    } @else {
+                      Enviar solicitação
+                    }
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
+        </article>
+      </section>
+
+      <section class="circular-message">
+        <span class="eyebrow"> Economia circular </span>
+
+        <h2>Um item usado não precisa ser um item sem utilidade.</h2>
+
+        <p>
+          Ao comprar ou receber um objeto da comunidade, você ajuda a prolongar sua vida útil e
+          reduzir desperdícios.
+        </p>
+      </section>
+    }
+  </div>
+</main>

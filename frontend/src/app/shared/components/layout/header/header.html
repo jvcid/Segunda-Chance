@@ -1,10 +1,12 @@
 <header class="site-header">
   <div class="header-container">
-    <a routerLink="/" class="brand" aria-label="Segunda Chance - início">
-      <img src="/brand/logo-horizontal.svg" alt="Segunda Chance" class="brand-logo" />
-    </a>
+    <div class="header-brand">
+      <img src="/brand/header-symbol.png" alt="Segunda Chance" class="header-logo" />
+    </div>
 
     <nav class="navigation" aria-label="Navegação principal">
+      <a routerLink="/welcome" routerLinkActive="active"> Início </a>
+
       <a routerLink="/ads" routerLinkActive="active"> Explorar </a>
 
       @if (isLoggedIn()) {

@@ -1,1 +1,184 @@
-<p>ad-create works!</p>
+<app-header />
+
+<main class="create-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/ads">Anúncios</a>
+      <span>/</span>
+      <span>Novo anúncio</span>
+    </nav>
+
+    <div class="page-layout">
+      <section class="form-section">
+        <div class="form-heading">
+          <span class="eyebrow">Novo anúncio</span>
+
+          <h1>Dê uma nova história a um objeto.</h1>
+
+          <p>
+            Preencha as informações abaixo para disponibilizar um item para venda ou doação dentro
+            da comunidade acadêmica.
+          </p>
+        </div>
+
+        @if (hasError()) {
+          <div class="error-message" role="alert">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <form class="ad-form" [formGroup]="form" (ngSubmit)="submit()">
+          <div class="form-field">
+            <label for="titulo">Título</label>
+
+            <input
+              id="titulo"
+              type="text"
+              formControlName="titulo"
+              maxlength="100"
+              placeholder="Ex.: Livro de Cálculo Volume 1"
+            />
+
+            <div class="field-info">
+              @if (form.controls.titulo.touched && form.controls.titulo.hasError('required')) {
+                <span class="field-error"> Informe o título do anúncio. </span>
+              } @else {
+                <span>Use um título curto e objetivo.</span>
+              }
+
+              <span> {{ form.controls.titulo.value.length }}/100 </span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="descricao">Descrição</label>
+
+            <textarea
+              id="descricao"
+              formControlName="descricao"
+              rows="6"
+              placeholder="Descreva o estado do item, características importantes e outras informações úteis."
+            ></textarea>
+
+            @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
+              <span class="field-error"> Informe uma descrição. </span>
+            }
+          </div>
+
+          <fieldset class="form-field">
+            <legend>O que você deseja fazer?</legend>
+
+            <div class="type-options">
+              <label class="type-card" [class.active]="form.controls.tipo.value === 'VENDA'">
+                <input type="radio" formControlName="tipo" value="VENDA" />
+
+                <span class="type-title">Vender</span>
+
+                <span class="type-description"> Defina um preço para o item. </span>
+              </label>
+
+              <label class="type-card" [class.active]="form.controls.tipo.value === 'DOACAO'">
+                <input type="radio" formControlName="tipo" value="DOACAO" />
+
+                <span class="type-title">Doar</span>
+
+                <span class="type-description"> Disponibilize o item gratuitamente. </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="categoryId">Categoria</label>
+
+              @if (isLoadingCategories()) {
+                <div class="category-state">Carregando categorias...</div>
+              } @else if (categoriesError()) {
+                <div class="category-error">
+                  <span> Não foi possível carregar as categorias. </span>
+
+                  <button type="button" (click)="loadCategories()">Tentar novamente</button>
+                </div>
+              } @else {
+                <select id="categoryId" formControlName="categoryId">
+                  <option [ngValue]="null">Selecione uma categoria</option>
+
+                  @for (category of categories(); track category.id) {
+                    <option [ngValue]="category.id">
+                      {{ category.name }}
+                    </option>
+                  }
+                </select>
+              }
+
+              @if (
+                form.controls.categoryId.touched && form.controls.categoryId.hasError('required')
+              ) {
+                <span class="field-error"> Selecione uma categoria. </span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="preco">Preço</label>
+
+              <div class="price-input" [class.disabled]="form.controls.tipo.value === 'DOACAO'">
+                <span>R$</span>
+
+                <input
+                  id="preco"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  formControlName="preco"
+                  [placeholder]="
+                    form.controls.tipo.value === 'DOACAO' ? 'Item para doação' : '0,00'
+                  "
+                />
+              </div>
+
+              @if (form.controls.tipo.value === 'DOACAO') {
+                <span class="field-help"> O preço não é necessário para doações. </span>
+              } @else if (form.controls.preco.touched && form.controls.preco.invalid) {
+                <span class="field-error"> Informe um preço válido. </span>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a routerLink="/ads" class="cancel-button"> Cancelar </a>
+
+            <button type="submit" class="submit-button" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                Publicando...
+              } @else {
+                Publicar anúncio
+              }
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="info-panel">
+        <span class="info-number">2ª</span>
+
+        <h2>Uma segunda chance começa aqui.</h2>
+
+        <p>
+          Ao disponibilizar algo que você não utiliza mais, outro membro da comunidade pode
+          encontrar exatamente o que precisava.
+        </p>
+
+        <div class="info-divider"></div>
+
+        <strong>Antes de publicar</strong>
+
+        <ul>
+          <li>Descreva o item com clareza.</li>
+          <li>Escolha a categoria correta.</li>
+          <li>Informe um preço justo, caso seja venda.</li>
+          <li>Confira as informações antes de publicar.</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</main>

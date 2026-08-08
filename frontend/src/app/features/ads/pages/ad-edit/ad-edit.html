@@ -1,1 +1,143 @@
-<p>ad-edit works!</p>
+<app-header />
+
+<main class="edit-page">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a routerLink="/my-ads"> Meus anúncios </a>
+
+      <span>/</span>
+
+      <span>Editar anúncio</span>
+    </nav>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando anúncio...</p>
+      </div>
+    } @else {
+      <div class="page-layout">
+        <section class="form-section">
+          <div class="form-heading">
+            <span class="eyebrow"> Editar anúncio </span>
+
+            <h1>Atualize as informações do item.</h1>
+
+            <p>Faça as alterações necessárias e salve para atualizar o anúncio na plataforma.</p>
+          </div>
+
+          @if (hasError()) {
+            <div class="error-message" role="alert">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <form class="ad-form" [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-field">
+              <label for="titulo"> Título </label>
+
+              <input id="titulo" type="text" formControlName="titulo" maxlength="100" />
+
+              <div class="field-info">
+                <span> {{ form.controls.titulo.value.length }}/100 </span>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="descricao"> Descrição </label>
+
+              <textarea id="descricao" rows="6" formControlName="descricao"></textarea>
+            </div>
+
+            <fieldset class="form-field">
+              <legend>Tipo do anúncio</legend>
+
+              <div class="type-options">
+                <label class="type-card" [class.active]="form.controls.tipo.value === 'VENDA'">
+                  <input type="radio" formControlName="tipo" value="VENDA" />
+
+                  <span class="type-title"> Vender </span>
+
+                  <span class="type-description"> Defina um preço para o item. </span>
+                </label>
+
+                <label class="type-card" [class.active]="form.controls.tipo.value === 'DOACAO'">
+                  <input type="radio" formControlName="tipo" value="DOACAO" />
+
+                  <span class="type-title"> Doar </span>
+
+                  <span class="type-description"> Disponibilize gratuitamente. </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="categoryId"> Categoria </label>
+
+                <select id="categoryId" formControlName="categoryId">
+                  <option [ngValue]="null">Selecione uma categoria</option>
+
+                  @for (category of categories(); track category.id) {
+                    <option [ngValue]="category.id">
+                      {{ category.name }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="preco"> Preço </label>
+
+                <div class="price-input" [class.disabled]="form.controls.tipo.value === 'DOACAO'">
+                  <span>R$</span>
+
+                  <input id="preco" type="number" min="0" step="0.01" formControlName="preco" />
+                </div>
+
+                @if (form.controls.tipo.value === 'DOACAO') {
+                  <span class="field-help"> O preço não é necessário para doações. </span>
+                }
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a routerLink="/my-ads" class="cancel-button"> Cancelar </a>
+
+              <button type="submit" class="submit-button" [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                  Salvando...
+                } @else {
+                  Salvar alterações
+                }
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="info-panel">
+          <span class="info-number"> ↻ </span>
+
+          <h2>Mantenha seu anúncio atualizado.</h2>
+
+          <p>
+            Informações corretas ajudam outros membros da comunidade a entender melhor o item
+            disponível.
+          </p>
+
+          <div class="info-divider"></div>
+
+          <strong> Você pode alterar </strong>
+
+          <ul>
+            <li>Título e descrição.</li>
+            <li>Categoria.</li>
+            <li>Venda ou doação.</li>
+            <li>Preço do item.</li>
+          </ul>
+        </aside>
+      </div>
+    }
+  </div>
+</main>

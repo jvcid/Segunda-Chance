@@ -2,6 +2,7 @@ package com.unifor.segundachance.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -81,10 +82,28 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Login e cadastro
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register"
                         ).permitAll()
+
+                        // Consulta pública de anúncios
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/anuncios",
+                                "/api/anuncios/*"
+                        ).permitAll()
+
+                        // Consulta pública de categorias
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/categories",
+                                "/api/categories/*"
+                        ).permitAll()
+
+                        // Restante protegido
                         .anyRequest().authenticated()
                 )
 

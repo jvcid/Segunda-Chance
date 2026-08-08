@@ -1,1 +1,59 @@
-<p>requests-dashboard works!</p>
+<app-header />
+
+<main class="requests-dashboard">
+  <div class="container">
+    <section class="page-header">
+      <span class="eyebrow">Minha conta</span>
+
+      <h1>Solicitações</h1>
+
+      <p>Acompanhe os seus interesses e gerencie as solicitações recebidas nos seus anúncios.</p>
+    </section>
+
+    <section class="requests-options">
+      <a routerLink="/requests/sent" class="request-option">
+        <div class="option-number">01</div>
+
+        <div class="option-content">
+          <span class="option-label"> Como interessado </span>
+
+          <h2>Solicitações enviadas</h2>
+
+          <p>
+            Veja os itens pelos quais você demonstrou interesse e acompanhe o status de cada
+            solicitação.
+          </p>
+
+          <span class="option-link"> Ver solicitações enviadas → </span>
+        </div>
+      </a>
+
+      <a routerLink="/requests/received" class="request-option">
+        <div class="option-number">02</div>
+
+        <div class="option-content">
+          <span class="option-label"> Como anunciante </span>
+
+          <h2>Solicitações recebidas</h2>
+
+          <p>
+            Veja quem demonstrou interesse nos seus anúncios e escolha entre aprovar ou rejeitar.
+          </p>
+
+          <span class="option-link"> Ver solicitações recebidas → </span>
+        </div>
+      </a>
+    </section>
+
+    <section class="dashboard-note">
+      <span class="eyebrow"> Como funciona </span>
+
+      <h2>Objetos circulam quando pessoas se conectam.</h2>
+
+      <p>
+        Ao demonstrar interesse em um item, uma solicitação é enviada ao anunciante. Ele poderá
+        avaliar o pedido e decidir se deseja aprová-lo.
+      </p>
+    </section>
+  </div>
+</main>

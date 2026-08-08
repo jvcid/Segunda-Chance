@@ -1,1 +1,149 @@
-<p>requests-received works!</p>
+<app-header />
+
+<main class="requests-page">
+  <div class="container">
+    <section class="page-header">
+      <div>
+        <span class="eyebrow"> Solicitações </span>
+
+        <h1>Solicitações recebidas</h1>
+
+        <p>Veja quem demonstrou interesse nos seus itens e gerencie cada solicitação.</p>
+      </div>
+
+      <a routerLink="/my-ads" class="my-ads-button"> Meus anúncios </a>
+    </section>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando solicitações...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="state-card">
+        <h2>Não foi possível carregar as solicitações.</h2>
+
+        <p>Tente novamente em alguns instantes.</p>
+
+        <button type="button" (click)="loadRequests()">Tentar novamente</button>
+      </div>
+    } @else if (requests().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon"> ↓ </span>
+
+        <span class="eyebrow"> Nenhuma solicitação </span>
+
+        <h2>Ninguém demonstrou interesse nos seus anúncios ainda.</h2>
+
+        <p>Quando alguém solicitar um dos seus itens, a solicitação aparecerá aqui.</p>
+
+        <a routerLink="/my-ads" class="my-ads-button"> Ver meus anúncios </a>
+      </div>
+    } @else {
+      <section class="requests-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow"> Sua comunidade </span>
+
+            <h2>
+              {{ requests().length }}
+              {{ requests().length === 1 ? 'solicitação recebida' : 'solicitações recebidas' }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="requests-list">
+          @for (request of requests(); track request.id) {
+            <article
+              class="request-card"
+              tabindex="0"
+              (click)="openAd(request.anuncioId)"
+              (keyup.enter)="openAd(request.anuncioId)"
+            >
+              <div class="request-main">
+                <div class="request-top">
+                  <div>
+                    <span class="request-label"> Interesse em </span>
+
+                    <h3>
+                      {{ request.anuncioTitulo }}
+                    </h3>
+                  </div>
+
+                  <span
+                    class="status"
+                    [class.approved]="request.status === 'APROVADA'"
+                    [class.rejected]="request.status === 'REJEITADA'"
+                  >
+                    {{ statusLabel(request.status) }}
+                  </span>
+                </div>
+
+                <div class="request-user">
+                  <span> Solicitado por </span>
+
+                  <strong>
+                    {{ request.userName }}
+                  </strong>
+                </div>
+
+                <div class="message">
+                  <span class="message-label"> Mensagem </span>
+
+                  <p>“{{ request.mensagem }}”</p>
+                </div>
+
+                <button
+                  type="button"
+                  class="view-ad"
+                  (click)="$event.stopPropagation(); openAd(request.anuncioId)"
+                >
+                  Ver anúncio →
+                </button>
+              </div>
+
+              <div class="request-actions">
+                @if (request.status === 'PENDENTE') {
+                  <button
+                    type="button"
+                    class="approve-button"
+                    [disabled]="processingId() === request.id"
+                    (click)="approve($event, request.id)"
+                  >
+                    @if (processingId() === request.id) {
+                      Processando...
+                    } @else {
+                      Aprovar
+                    }
+                  </button>
+
+                  <button
+                    type="button"
+                    class="reject-button"
+                    [disabled]="processingId() === request.id"
+                    (click)="reject($event, request.id)"
+                  >
+                    Rejeitar
+                  </button>
+                } @else if (request.status === 'APROVADA') {
+                  <div class="decision approved-decision">
+                    <strong> Solicitação aprovada </strong>
+
+                    <span> Este pedido foi aceito. </span>
+                  </div>
+                } @else if (request.status === 'REJEITADA') {
+                  <div class="decision rejected-decision">
+                    <strong> Solicitação rejeitada </strong>
+
+                    <span> Este pedido foi encerrado. </span>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</main>

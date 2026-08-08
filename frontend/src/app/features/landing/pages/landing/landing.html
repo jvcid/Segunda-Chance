@@ -1,197 +1,263 @@
 <app-header />
 
-<main>
+<main class="landing">
+  <!-- HERO -->
   <section class="hero">
     <div class="container hero-content">
       <div class="hero-copy">
-        <span class="eyebrow"> Marketplace da comunidade universitária </span>
+        <span class="eyebrow">Economia circular no campus</span>
 
         <h1>Dê uma nova vida ao que você não usa.</h1>
 
-        <p>
-          Compre, venda ou doe itens dentro da comunidade acadêmica de forma simples, organizada e
-          consciente.
+        <p class="hero-description">
+          Encontre livros, materiais, eletrônicos e outros itens compartilhados pela comunidade
+          acadêmica da Universidade de Fortaleza.
         </p>
 
-        <form class="hero-search" (submit)="$event.preventDefault(); search(searchInput.value)">
-          <label class="sr-only" for="landing-search"> Buscar itens </label>
-
+        <div class="hero-search">
           <input
             #searchInput
-            id="landing-search"
             type="search"
-            placeholder="Buscar livros, eletrônicos, materiais..."
+            placeholder="O que você está procurando?"
+            aria-label="Buscar anúncios"
+            (keyup.enter)="search(searchInput.value)"
           />
 
-          <button type="submit">Buscar</button>
-        </form>
+          <button type="button" (click)="search(searchInput.value)">Buscar</button>
+        </div>
 
         <div class="hero-actions">
-          <a routerLink="/ads" class="primary-action"> Explorar anúncios </a>
+          <a routerLink="/ads" class="primary-action"> Explorar itens </a>
 
-          <a routerLink="/register" class="secondary-action"> Criar minha conta </a>
+          <button type="button" class="secondary-action" (click)="createAd()">
+            Anunciar um item
+          </button>
         </div>
+
+        <p class="community-note">Compra, venda e doação entre membros da comunidade acadêmica.</p>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="circle circle-one"></div>
-        <div class="circle circle-two"></div>
+      <div class="hero-visual">
+        <div class="hero-brand">
+          <img src="/brand/logo-horizontal.png" alt="Segunda Chance" />
+        </div>
 
-        <div class="cycle-card">
-          <span class="cycle-symbol">S</span>
-
-          <strong>Segunda Chance</strong>
-
-          <span> Uma nova vida para cada objeto. </span>
+        <div class="circular-message">
+          <span>Reutilize</span>
+          <strong>Compartilhe</strong>
+          <span>Faça circular</span>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ESTATÍSTICAS -->
+  <section class="statistics-section">
+    <div class="container statistics">
+      @for (statistic of statistics; track statistic.label) {
+        <div class="statistic">
+          <strong>{{ statistic.value }}</strong>
+          <span>{{ statistic.label }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
   <section class="categories-section">
     <div class="container">
       <div class="section-heading">
         <div>
-          <span class="eyebrow"> Explore </span>
-
-          <h2>Encontre por categoria</h2>
+          <span class="eyebrow">Explore a comunidade</span>
+          <h2>Encontre o que você precisa.</h2>
         </div>
 
-        <a routerLink="/ads"> Ver todos </a>
+        <a routerLink="/ads" class="section-link"> Ver todos os itens </a>
       </div>
 
-      <div class="categories-grid">
+      <div class="categories">
         @for (category of categories; track category) {
           <button type="button" class="category-card" (click)="openCategory(category)">
-            <span class="category-icon"> ↻ </span>
-
-            <span>
+            <span class="category-name">
               {{ category }}
             </span>
+
+            <span class="category-arrow" aria-hidden="true"> → </span>
           </button>
         }
       </div>
     </div>
   </section>
 
+  <!-- ÚLTIMOS ANÚNCIOS -->
   <section class="recent-section">
     <div class="container">
       <div class="section-heading">
         <div>
-          <span class="eyebrow"> Descubra </span>
-
-          <h2>Anúncios recentes</h2>
+          <span class="eyebrow">Novidades</span>
+          <h2>Itens que acabaram de chegar.</h2>
         </div>
 
-        <a routerLink="/ads"> Ver todos os anúncios </a>
+        <a routerLink="/ads" class="section-link"> Explorar anúncios </a>
       </div>
 
-      <div class="ads-grid">
-        <article class="ad-card">
-          <div class="ad-image placeholder-image">Livro</div>
+      @if (isLoadingAds()) {
+        <div class="ads-state">
+          <p>Carregando anúncios...</p>
+        </div>
+      } @else if (adsError()) {
+        <div class="ads-state">
+          <p>Não foi possível carregar os anúncios.</p>
 
-          <div class="ad-content">
-            <span class="ad-category"> Livros </span>
+          <button type="button" (click)="loadRecentAds()">Tentar novamente</button>
+        </div>
+      } @else if (recentAds().length === 0) {
+        <div class="ads-state">
+          <p>Nenhum anúncio disponível no momento.</p>
+        </div>
+      } @else {
+        <div class="ads-grid">
+          @for (ad of recentAds(); track ad.id) {
+            <article
+              class="ad-card"
+              tabindex="0"
+              (click)="openAd(ad.id)"
+              (keyup.enter)="openAd(ad.id)"
+            >
+              <div class="ad-image">
+                @if (ad.imagemPrincipalUrl) {
+                  <img [src]="ad.imagemPrincipalUrl" [alt]="ad.titulo" />
+                } @else {
+                  <div class="ad-image-placeholder">
+                    <span>{{ ad.categoryName }}</span>
+                  </div>
+                }
+              </div>
 
-            <h3>Cálculo Volume 1</h3>
+              <div class="ad-content">
+                <span class="ad-category">
+                  {{ ad.categoryName }}
+                </span>
 
-            <strong class="ad-price"> R$ 45,00 </strong>
-          </div>
-        </article>
+                <h3>
+                  {{ ad.titulo }}
+                </h3>
 
-        <article class="ad-card">
-          <div class="ad-image placeholder-image">Eletrônico</div>
+                <div class="ad-footer">
+                  <strong [class.donation]="ad.tipo === 'DOACAO'">
+                    {{ formatPrice(ad) }}
+                  </strong>
 
-          <div class="ad-content">
-            <span class="ad-category"> Eletrônicos </span>
-
-            <h3>Calculadora científica</h3>
-
-            <strong class="ad-price"> R$ 70,00 </strong>
-          </div>
-        </article>
-
-        <article class="ad-card">
-          <div class="ad-image placeholder-image">Doação</div>
-
-          <div class="ad-content">
-            <span class="ad-category"> Materiais acadêmicos </span>
-
-            <h3>Apostilas de programação</h3>
-
-            <strong class="ad-price donation"> Doação </strong>
-          </div>
-        </article>
-
-        <article class="ad-card">
-          <div class="ad-image placeholder-image">Informática</div>
-
-          <div class="ad-content">
-            <span class="ad-category"> Informática </span>
-
-            <h3>Teclado USB</h3>
-
-            <strong class="ad-price"> R$ 55,00 </strong>
-          </div>
-        </article>
-      </div>
+                  <span aria-hidden="true"> → </span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
     </div>
   </section>
-
-  <section class="purpose-section">
-    <div class="container purpose-content">
-      <div>
-        <span class="eyebrow"> Economia circular </span>
+  <!-- COMO FUNCIONA -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="how-heading">
+        <span class="eyebrow">Como funciona</span>
 
         <h2>Um objeto parado pode ser útil para outra pessoa.</h2>
+
+        <p>
+          O Segunda Chance aproxima pessoas da comunidade acadêmica para que objetos continuem
+          circulando em vez de serem descartados.
+        </p>
       </div>
 
-      <div class="purpose-items">
-        <div>
-          <strong>01</strong>
-          <span>Anuncie</span>
-        </div>
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">01</span>
 
-        <div>
-          <strong>02</strong>
-          <span>Conecte-se</span>
-        </div>
+          <h3>Anuncie</h3>
 
-        <div>
-          <strong>03</strong>
-          <span>Reutilize</span>
-        </div>
+          <p>Publique um item que você não utiliza mais e escolha entre venda ou doação.</p>
+        </article>
+
+        <article class="step">
+          <span class="step-number">02</span>
+
+          <h3>Conecte-se</h3>
+
+          <p>Encontre pessoas da comunidade interessadas em dar uma nova utilidade ao objeto.</p>
+        </article>
+
+        <article class="step">
+          <span class="step-number">03</span>
+
+          <h3>Faça circular</h3>
+
+          <p>Um item que estava parado ganha uma nova história dentro da própria universidade.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="cta-section">
-    <div class="container cta-content">
+  <!-- COMUNIDADE -->
+  <section class="community-section">
+    <div class="container community-content">
       <div>
-        <h2>Tem algo que não usa mais?</h2>
+        <span class="eyebrow">Feito para a comunidade</span>
 
-        <p>Transforme um item parado em uma nova oportunidade para alguém.</p>
+        <h2>
+          Mais reutilização.<br />
+          Menos desperdício.
+        </h2>
+
+        <p>
+          Uma plataforma criada para incentivar colaboração, acesso e consumo consciente dentro da
+          comunidade acadêmica.
+        </p>
       </div>
 
-      <a routerLink="/ads/create"> Anunciar item </a>
+      <div class="community-values">
+        <strong>Compre.</strong>
+        <strong>Venda.</strong>
+        <strong>Doe.</strong>
+
+        <span> Dê uma nova vida aos objetos. </span>
+      </div>
     </div>
   </section>
-</main>
 
-<footer class="site-footer">
-  <div class="container footer-content">
-    <div>
-      <strong> Segunda Chance </strong>
+  <!-- CTA FINAL -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="cta-card">
+        <div>
+          <span class="eyebrow">Segunda Chance</span>
+
+          <h2>Tem algo parado por aí?</h2>
+
+          <p>
+            Anuncie para a comunidade e dê uma nova oportunidade a um objeto que você não utiliza
+            mais.
+          </p>
+        </div>
+
+        <div class="cta-actions">
+          <button type="button" class="primary-action" (click)="createAd()">
+            Anunciar um item
+          </button>
+
+          <a routerLink="/about" class="secondary-action"> Conheça o projeto </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <img src="/brand/logo-white.png" alt="Segunda Chance" class="footer-logo" />
 
       <p>Plataforma universitária de compra, venda e doação de objetos usados.</p>
     </div>
-
-    <nav aria-label="Links do rodapé">
-      <a routerLink="/ads"> Anúncios </a>
-
-      <a routerLink="/about"> Sobre </a>
-
-      <a routerLink="/login"> Entrar </a>
-    </nav>
-  </div>
-</footer>
+  </footer>
+</main>

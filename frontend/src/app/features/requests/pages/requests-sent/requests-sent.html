@@ -1,1 +1,120 @@
-<p>requests-sent works!</p>
+<app-header />
+
+<main class="requests-page">
+  <div class="container">
+    <section class="page-header">
+      <div>
+        <span class="eyebrow"> Solicitações </span>
+
+        <h1>Solicitações enviadas</h1>
+
+        <p>Acompanhe os itens pelos quais você demonstrou interesse.</p>
+      </div>
+
+      <a routerLink="/ads" class="explore-button"> Explorar anúncios </a>
+    </section>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando solicitações...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="state-card">
+        <h2>Não foi possível carregar suas solicitações.</h2>
+
+        <p>Tente novamente em alguns instantes.</p>
+
+        <button type="button" (click)="loadRequests()">Tentar novamente</button>
+      </div>
+    } @else if (requests().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon"> ↗ </span>
+
+        <span class="eyebrow"> Nenhuma solicitação </span>
+
+        <h2>Você ainda não demonstrou interesse em nenhum item.</h2>
+
+        <p>Explore os anúncios da comunidade e encontre algo que possa ser útil para você.</p>
+
+        <a routerLink="/ads" class="explore-button"> Explorar anúncios </a>
+      </div>
+    } @else {
+      <section class="requests-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow"> Acompanhamento </span>
+
+            <h2>
+              {{ requests().length }}
+              {{ requests().length === 1 ? 'solicitação enviada' : 'solicitações enviadas' }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="requests-list">
+          @for (request of requests(); track request.id) {
+            <article
+              class="request-card"
+              tabindex="0"
+              (click)="openAd(request.anuncioId)"
+              (keyup.enter)="openAd(request.anuncioId)"
+            >
+              <div class="request-main">
+                <div class="request-top">
+                  <span class="request-label"> Interesse em </span>
+
+                  <span
+                    class="status"
+                    [class.approved]="request.status === 'APROVADA'"
+                    [class.rejected]="request.status === 'REJEITADA'"
+                  >
+                    {{ statusLabel(request.status) }}
+                  </span>
+                </div>
+
+                <h3>
+                  {{ request.anuncioTitulo }}
+                </h3>
+
+                <blockquote>“{{ request.mensagem }}”</blockquote>
+
+                <div class="request-meta">
+                  <span> Enviada para o anúncio </span>
+
+                  <strong> #{{ request.anuncioId }} </strong>
+                </div>
+              </div>
+
+              <div class="request-actions">
+                <button
+                  type="button"
+                  class="view-button"
+                  (click)="$event.stopPropagation(); openAd(request.anuncioId)"
+                >
+                  Ver anúncio
+                </button>
+
+                @if (request.status === 'PENDENTE') {
+                  <button
+                    type="button"
+                    class="delete-button"
+                    [disabled]="deletingId() === request.id"
+                    (click)="deleteRequest($event, request.id)"
+                  >
+                    @if (deletingId() === request.id) {
+                      Cancelando...
+                    } @else {
+                      Cancelar solicitação
+                    }
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</main>

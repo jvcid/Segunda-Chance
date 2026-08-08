@@ -1,1 +1,158 @@
-<p>my-ads works!</p>
+<app-header />
+
+<main class="my-ads-page">
+  <div class="container">
+    <section class="page-header">
+      <div>
+        <span class="eyebrow"> Minha conta </span>
+
+        <h1>Meus anúncios</h1>
+
+        <p>Gerencie os itens que você colocou em circulação na comunidade.</p>
+      </div>
+
+      <a routerLink="/ads/create" class="create-button"> Anunciar novo item </a>
+    </section>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando seus anúncios...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="state-card">
+        <h2>Não foi possível carregar seus anúncios.</h2>
+
+        <p>Tente novamente em alguns instantes.</p>
+
+        <button type="button" (click)="loadAds()">Tentar novamente</button>
+      </div>
+    } @else if (ads().length === 0) {
+      <div class="empty-state">
+        <div class="empty-symbol">↻</div>
+
+        <span class="eyebrow"> Comece a circular </span>
+
+        <h2>Você ainda não possui anúncios.</h2>
+
+        <p>
+          Tem algum livro, eletrônico ou material parado? Dê uma nova oportunidade a esse objeto.
+        </p>
+
+        <a routerLink="/ads/create" class="create-button"> Criar primeiro anúncio </a>
+      </div>
+    } @else {
+      <section class="content-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow"> Seus itens </span>
+
+            <h2>
+              {{ ads().length }}
+              {{ ads().length === 1 ? 'anúncio publicado' : 'anúncios publicados' }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="ads-grid">
+          @for (ad of ads(); track ad.id) {
+            <article
+              class="ad-card"
+              tabindex="0"
+              (click)="openAd(ad.id)"
+              (keyup.enter)="openAd(ad.id)"
+            >
+              <div class="ad-image">
+                @if (ad.imagemPrincipalUrl) {
+                  <img [src]="ad.imagemPrincipalUrl" [alt]="ad.titulo" />
+                } @else {
+                  <div class="image-placeholder">
+                    <span>
+                      {{ ad.categoryName }}
+                    </span>
+                  </div>
+                }
+
+                <span class="status-badge" [class.unavailable]="ad.status !== 'DISPONIVEL'">
+                  {{ ad.status }}
+                </span>
+              </div>
+
+              <div class="ad-content">
+                <div class="ad-meta">
+                  <span class="category">
+                    {{ ad.categoryName }}
+                  </span>
+
+                  <span class="type" [class.donation]="ad.tipo === 'DOACAO'">
+                    {{ ad.tipo === 'DOACAO' ? 'Doação' : 'Venda' }}
+                  </span>
+                </div>
+
+                <h3>
+                  {{ ad.titulo }}
+                </h3>
+
+                <p>
+                  {{ ad.descricao }}
+                </p>
+
+                <strong class="price" [class.donation]="ad.tipo === 'DOACAO'">
+                  {{ formatPrice(ad) }}
+                </strong>
+
+                <div class="card-actions">
+                  <button type="button" class="edit-button" (click)="editAd($event, ad.id)">
+                    Editar
+                  </button>
+
+                  <button type="button" class="delete-button" (click)="askDelete($event, ad.id)">
+                    Excluir
+                  </button>
+                </div>
+              </div>
+
+              @if (confirmDeleteId() === ad.id) {
+                <div class="delete-confirmation" (click)="$event.stopPropagation()">
+                  <div class="confirmation-content">
+                    <span class="confirmation-label"> Excluir anúncio </span>
+
+                    <h4>Tem certeza?</h4>
+
+                    <p>
+                      O anúncio
+                      <strong>
+                        {{ ad.titulo }}
+                      </strong>
+                      será removido.
+                    </p>
+
+                    <div class="confirmation-actions">
+                      <button type="button" class="cancel-delete" (click)="cancelDelete()">
+                        Cancelar
+                      </button>
+
+                      <button
+                        type="button"
+                        class="confirm-delete"
+                        [disabled]="deletingId() === ad.id"
+                        (click)="deleteAd(ad.id)"
+                      >
+                        @if (deletingId() === ad.id) {
+                          Excluindo...
+                        } @else {
+                          Excluir
+                        }
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</main>
