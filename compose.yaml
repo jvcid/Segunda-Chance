@@ -1,0 +1,71 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: segunda_chance_db
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: segundachance
+      MYSQL_USER: ${DB_USERNAME:-doppler}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+
+    ports:
+      - "3396:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${DB_ROOT_PASSWORD:-root}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: segunda_chance_backend
+    restart: always
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/segundachance?serverTimezone=America/Fortaleza&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-doppler}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: ${JWT_SECRET}
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer:latest
+    container_name: segunda_chance_adminer
+    restart: always
+
+    ports:
+      - "8081:8080"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

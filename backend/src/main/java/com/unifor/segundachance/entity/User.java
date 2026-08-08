@@ -2,12 +2,14 @@ package com.unifor.segundachance.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
+import lombok.*;
+import jakarta.annotation.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Data
 public class User {
 
     @Id
