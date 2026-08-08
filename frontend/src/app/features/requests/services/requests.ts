@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Request } from '../models/request';
 import { RequestCreate } from '../models/request-create';
+import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { RequestCreate } from '../models/request-create';
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/api/solicitacoes';
+  private readonly apiUrl = `${environment.apiUrl}/api/solicitacoes`;
 
   create(data: RequestCreate): Observable<Request> {
     return this.http.post<Request>(this.apiUrl, data);
