@@ -17,7 +17,10 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(
-                List.of("http://localhost:*")
+                List.of(
+                        "http://localhost:*",
+                        "https://segunda-chance-flax.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
