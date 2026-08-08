@@ -3,8 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AdImageRequest } from '../models/ad-image-request';
-import { environment } from '../../../../environments/environment.development';
-
+import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
