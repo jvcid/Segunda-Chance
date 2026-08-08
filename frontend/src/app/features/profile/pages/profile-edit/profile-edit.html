@@ -1,1 +1,181 @@
-<p>profile-edit works!</p>
+<app-header />
+
+<main class="edit-profile-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/profile"> Perfil </a>
+
+      <span>/</span>
+
+      <span> Editar perfil </span>
+    </nav>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando seus dados...</p>
+      </div>
+    } @else {
+      <div class="page-layout">
+        <section class="form-section">
+          <div class="form-heading">
+            <span class="eyebrow"> Minha conta </span>
+
+            <h1>Edite seu perfil.</h1>
+
+            <p>
+              Mantenha suas informações atualizadas para continuar participando da comunidade
+              Segunda Chance.
+            </p>
+          </div>
+
+          @if (hasError()) {
+            <div class="error-message" role="alert">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
+            <!-- NOME -->
+
+            <div class="form-field">
+              <label for="name"> Nome </label>
+
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                maxlength="45"
+                autocomplete="name"
+                placeholder="Seu nome"
+              />
+
+              <div class="field-info">
+                @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+                  <span class="field-error"> Informe seu nome. </span>
+                } @else {
+                  <span> Este nome será exibido nos seus anúncios. </span>
+                }
+
+                <span> {{ form.controls.name.value.length }}/45 </span>
+              </div>
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="form-field">
+              <label for="email"> E-mail </label>
+
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                maxlength="60"
+                autocomplete="email"
+                placeholder="seu@email.com"
+              />
+
+              @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+                <span class="field-error"> Informe seu e-mail. </span>
+              } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+                <span class="field-error"> Informe um e-mail válido. </span>
+              } @else {
+                <span class="field-help"> Utilize um endereço de e-mail válido. </span>
+              }
+            </div>
+
+            <!-- SENHA -->
+
+            <div class="form-field">
+              <label for="password"> Senha </label>
+
+              <div class="password-input">
+                <input
+                  id="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  maxlength="100"
+                  autocomplete="new-password"
+                  placeholder="Digite uma senha para salvar"
+                />
+
+                <button type="button" class="password-toggle" (click)="togglePassword()">
+                  {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+                </button>
+              </div>
+
+              @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+                <span class="field-error"> Informe uma senha para salvar as alterações. </span>
+              } @else if (
+                form.controls.password.touched && form.controls.password.hasError('minlength')
+              ) {
+                <span class="field-error"> A senha deve possuir pelo menos 8 caracteres. </span>
+              } @else {
+                <span class="field-help"> O backend exige uma senha ao atualizar seus dados. </span>
+              }
+            </div>
+
+            <!-- PERFIL -->
+
+            @if (user(); as currentUser) {
+              <div class="role-info">
+                <span> Tipo de conta </span>
+
+                <strong>
+                  {{ currentUser.roleName }}
+                </strong>
+
+                <small> O tipo da sua conta não pode ser alterado por esta página. </small>
+              </div>
+            }
+
+            <!-- BOTÕES -->
+
+            <div class="form-actions">
+              <a routerLink="/profile" class="cancel-button"> Cancelar </a>
+
+              <button type="submit" class="save-button" [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                  Salvando...
+                } @else {
+                  Salvar alterações
+                }
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PAINEL LATERAL -->
+
+        <aside class="info-panel">
+          <div class="profile-symbol">
+            @if (user(); as currentUser) {
+              {{ currentUser.name.charAt(0).toUpperCase() }}
+            }
+          </div>
+
+          <span class="info-label"> Seu perfil </span>
+
+          <h2>Sua identidade dentro da comunidade.</h2>
+
+          <p>
+            Seus dados ajudam outros membros da Segunda Chance a identificar quem está anunciando ou
+            demonstrando interesse em um item.
+          </p>
+
+          <div class="info-divider"></div>
+
+          <strong> Antes de salvar </strong>
+
+          <ul>
+            <li>Confira seu nome.</li>
+            <li>Use um e-mail válido.</li>
+            <li>Escolha uma senha segura.</li>
+            <li>Revise as informações antes de confirmar.</li>
+          </ul>
+        </aside>
+      </div>
+    }
+  </div>
+</main>

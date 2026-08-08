@@ -4,7 +4,9 @@
   <div class="container">
     <nav class="breadcrumb" aria-label="Navegação estrutural">
       <a routerLink="/ads">Anúncios</a>
+
       <span>/</span>
+
       <span>Novo anúncio</span>
     </nav>
 
@@ -28,6 +30,7 @@
         }
 
         <form class="ad-form" [formGroup]="form" (ngSubmit)="submit()">
+          <!-- TÍTULO -->
           <div class="form-field">
             <label for="titulo">Título</label>
 
@@ -43,13 +46,14 @@
               @if (form.controls.titulo.touched && form.controls.titulo.hasError('required')) {
                 <span class="field-error"> Informe o título do anúncio. </span>
               } @else {
-                <span>Use um título curto e objetivo.</span>
+                <span> Use um título curto e objetivo. </span>
               }
 
               <span> {{ form.controls.titulo.value.length }}/100 </span>
             </div>
           </div>
 
+          <!-- DESCRIÇÃO -->
           <div class="form-field">
             <label for="descricao">Descrição</label>
 
@@ -65,6 +69,39 @@
             }
           </div>
 
+          <!-- IMAGEM -->
+          <div class="form-field image-field">
+            <label for="imageUrl"> Imagem do item </label>
+
+            <input
+              id="imageUrl"
+              type="url"
+              formControlName="imageUrl"
+              maxlength="500"
+              placeholder="https://exemplo.com/imagem-do-item.jpg"
+            />
+
+            @if (form.controls.imageUrl.value) {
+              <div class="image-preview">
+                <img
+                  [src]="form.controls.imageUrl.value"
+                  alt="Pré-visualização da imagem do anúncio"
+                />
+              </div>
+            }
+
+            <div class="field-info">
+              @if (form.controls.imageUrl.touched && form.controls.imageUrl.hasError('required')) {
+                <span class="field-error"> Informe a URL de uma imagem. </span>
+              } @else {
+                <span> Cole o endereço público de uma imagem do item. </span>
+              }
+
+              <span> {{ form.controls.imageUrl.value.length }}/500 </span>
+            </div>
+          </div>
+
+          <!-- TIPO -->
           <fieldset class="form-field">
             <legend>O que você deseja fazer?</legend>
 
@@ -72,7 +109,7 @@
               <label class="type-card" [class.active]="form.controls.tipo.value === 'VENDA'">
                 <input type="radio" formControlName="tipo" value="VENDA" />
 
-                <span class="type-title">Vender</span>
+                <span class="type-title"> Vender </span>
 
                 <span class="type-description"> Defina um preço para o item. </span>
               </label>
@@ -80,16 +117,17 @@
               <label class="type-card" [class.active]="form.controls.tipo.value === 'DOACAO'">
                 <input type="radio" formControlName="tipo" value="DOACAO" />
 
-                <span class="type-title">Doar</span>
+                <span class="type-title"> Doar </span>
 
                 <span class="type-description"> Disponibilize o item gratuitamente. </span>
               </label>
             </div>
           </fieldset>
 
+          <!-- CATEGORIA + PREÇO -->
           <div class="form-row">
             <div class="form-field">
-              <label for="categoryId">Categoria</label>
+              <label for="categoryId"> Categoria </label>
 
               @if (isLoadingCategories()) {
                 <div class="category-state">Carregando categorias...</div>
@@ -119,7 +157,7 @@
             </div>
 
             <div class="form-field">
-              <label for="preco">Preço</label>
+              <label for="preco"> Preço </label>
 
               <div class="price-input" [class.disabled]="form.controls.tipo.value === 'DOACAO'">
                 <span>R$</span>
@@ -144,6 +182,7 @@
             </div>
           </div>
 
+          <!-- AÇÕES -->
           <div class="form-actions">
             <a routerLink="/ads" class="cancel-button"> Cancelar </a>
 
@@ -159,7 +198,7 @@
       </section>
 
       <aside class="info-panel">
-        <span class="info-number">2ª</span>
+        <span class="info-number"> 2ª </span>
 
         <h2>Uma segunda chance começa aqui.</h2>
 
@@ -170,9 +209,10 @@
 
         <div class="info-divider"></div>
 
-        <strong>Antes de publicar</strong>
+        <strong> Antes de publicar </strong>
 
         <ul>
+          <li>Use uma imagem pública e clara do item.</li>
           <li>Descreva o item com clareza.</li>
           <li>Escolha a categoria correta.</li>
           <li>Informe um preço justo, caso seja venda.</li>

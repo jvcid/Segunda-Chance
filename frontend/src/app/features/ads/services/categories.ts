@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../../../environments/environment.development';
 import { Category } from '../models/category';
 
 @Injectable({
@@ -10,13 +10,9 @@ import { Category } from '../models/category';
 export class CategoriesService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/api/categories';
+  private readonly apiUrl = `${environment.apiUrl}/api/categories`;
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiUrl);
-  }
-
-  getCategoryById(id: number): Observable<Category> {
-    return this.http.get<Category>(`${this.apiUrl}/${id}`);
   }
 }

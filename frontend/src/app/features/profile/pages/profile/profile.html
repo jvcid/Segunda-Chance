@@ -1,1 +1,118 @@
-<p>profile works!</p>
+<app-header />
+
+<main class="profile-page">
+  <div class="container">
+    @if (isLoading()) {
+      <div class="state-card">
+        <div class="spinner"></div>
+
+        <p>Carregando perfil...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="state-card">
+        <h2>Não foi possível carregar seu perfil.</h2>
+
+        <p>Tente novamente em alguns instantes.</p>
+
+        <button type="button" (click)="loadUser()">Tentar novamente</button>
+      </div>
+    } @else if (user(); as currentUser) {
+      <section class="profile-header">
+        <div class="profile-identity">
+          <div class="avatar">
+            {{ initials(currentUser.name) }}
+          </div>
+
+          <div>
+            <span class="eyebrow"> Minha conta </span>
+
+            <h1>
+              {{ currentUser.name }}
+            </h1>
+
+            <p>
+              {{ currentUser.email }}
+            </p>
+          </div>
+        </div>
+
+        <a routerLink="/profile/edit" class="edit-button"> Editar perfil </a>
+      </section>
+
+      <section class="profile-grid">
+        <article class="profile-card">
+          <span class="card-label"> Informações da conta </span>
+
+          <div class="info-row">
+            <span>Nome</span>
+
+            <strong>
+              {{ currentUser.name }}
+            </strong>
+          </div>
+
+          <div class="info-row">
+            <span>E-mail</span>
+
+            <strong>
+              {{ currentUser.email }}
+            </strong>
+          </div>
+
+          <div class="info-row">
+            <span>Perfil</span>
+
+            <strong>
+              {{ currentUser.roleName }}
+            </strong>
+          </div>
+        </article>
+
+        <article class="actions-card">
+          <span class="card-label"> Sua atividade </span>
+
+          <a routerLink="/my-ads" class="action-link">
+            <div>
+              <strong> Meus anúncios </strong>
+
+              <span> Gerencie os itens que você publicou. </span>
+            </div>
+
+            <span>→</span>
+          </a>
+
+          <a routerLink="/requests" class="action-link">
+            <div>
+              <strong> Solicitações </strong>
+
+              <span> Acompanhe pedidos enviados e recebidos. </span>
+            </div>
+
+            <span>→</span>
+          </a>
+
+          <a routerLink="/ads/create" class="action-link">
+            <div>
+              <strong> Anunciar novo item </strong>
+
+              <span> Coloque outro objeto em circulação. </span>
+            </div>
+
+            <span>→</span>
+          </a>
+        </article>
+      </section>
+
+      <section class="profile-message">
+        <span class="eyebrow"> Segunda Chance </span>
+
+        <h2>Sua participação mantém a comunidade em movimento.</h2>
+
+        <p>
+          Cada anúncio, doação e solicitação ajuda a prolongar a vida útil dos objetos dentro da
+          comunidade acadêmica.
+        </p>
+      </section>
+    }
+  </div>
+</main>

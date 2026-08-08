@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../../../environments/environment.development';
 import { Ad, AdPage } from '../models/ad';
 import { AdRequest } from '../models/ad-request';
 
@@ -11,7 +11,7 @@ import { AdRequest } from '../models/ad-request';
 export class AdsService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/api/anuncios';
+  private readonly apiUrl = `${environment.apiUrl}/api/anuncios`;
 
   getAds(
     page = 0,
@@ -19,6 +19,7 @@ export class AdsService {
     titulo?: string,
     categoryId?: number,
     tipo?: 'VENDA' | 'DOACAO',
+    status?: string,
   ): Observable<AdPage> {
     let params = new HttpParams().set('page', page).set('size', size);
 
@@ -34,11 +35,14 @@ export class AdsService {
       params = params.set('tipo', tipo);
     }
 
+    if (status) {
+      params = params.set('status', status);
+    }
+
     return this.http.get<AdPage>(this.apiUrl, {
       params,
     });
   }
-
   getAdById(id: number): Observable<Ad> {
     return this.http.get<Ad>(`${this.apiUrl}/${id}`);
   }

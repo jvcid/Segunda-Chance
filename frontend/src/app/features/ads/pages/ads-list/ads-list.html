@@ -37,7 +37,7 @@
             <h2>Filtros</h2>
           </div>
 
-          @if (searchTerm() || selectedCategory() || selectedType()) {
+          @if (searchTerm() || selectedCategoryId() !== null || selectedType()) {
             <button type="button" class="clear-button" (click)="clearFilters()">
               Limpar filtros
             </button>
@@ -51,20 +51,28 @@
           <div class="filter-options">
             <button
               type="button"
-              [class.active]="selectedCategory() === ''"
-              (click)="selectedCategory.set(''); loadAds(0)"
+              [class.active]="selectedCategoryId() === null"
+              (click)="filterByCategory(null)"
             >
               Todas
             </button>
 
-            @for (category of categories; track category) {
-              <button
-                type="button"
-                [class.active]="selectedCategory() === category"
-                (click)="filterByCategory(category)"
-              >
-                {{ category }}
+            @if (isLoadingCategories()) {
+              <span class="filter-state"> Carregando categorias... </span>
+            } @else if (categoriesError()) {
+              <button type="button" class="retry-categories" (click)="loadCategories()">
+                Recarregar categorias
               </button>
+            } @else {
+              @for (category of categories(); track category.id) {
+                <button
+                  type="button"
+                  [class.active]="selectedCategoryId() === category.id"
+                  (click)="filterByCategory(category.id)"
+                >
+                  {{ category.name }}
+                </button>
+              }
             }
           </div>
         </div>

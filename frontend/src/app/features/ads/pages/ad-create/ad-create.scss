@@ -519,4 +519,33 @@ fieldset.form-field {
   .submit-button {
     width: 100%;
   }
+
+  .image-field {
+    .image-preview {
+      margin-top: var(--space-3);
+
+      width: 100%;
+      max-width: 460px;
+
+      aspect-ratio: 16 / 10;
+
+      overflow: hidden;
+
+      background: var(--sc-background);
+
+      border: 1px solid var(--sc-border);
+      border-radius: var(--radius-md);
+
+      box-shadow: 0 8px 24px rgba(15, 60, 100, 0.05);
+
+      img {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+      }
+    }
+  }
 }

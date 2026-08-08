@@ -1,1 +1,35 @@
-<p>not-found works!</p>
+<app-header />
+
+<main class="not-found-page">
+  <div class="container">
+    <section class="not-found-card">
+      <div class="error-code">404</div>
+
+      <span class="eyebrow"> Página não encontrada </span>
+
+      <h1>Parece que este caminho não ganhou uma segunda chance.</h1>
+
+      <p class="description">
+        A página que você tentou acessar não existe, foi removida ou teve seu endereço alterado.
+      </p>
+
+      <div class="error-visual">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+
+        <div class="symbol">↻</div>
+      </div>
+
+      <div class="actions">
+        <a routerLink="/welcome" class="primary-button"> Voltar ao início </a>
+
+        <a routerLink="/ads" class="secondary-button"> Explorar anúncios </a>
+      </div>
+
+      <p class="help-text">
+        Se você chegou aqui através de algum link do Segunda Chance, tente voltar para a página
+        inicial e navegar novamente.
+      </p>
+    </section>
+  </div>
+</main>

@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AdsService } from '../../../ads/services/ads';
 import { Ad } from '../../../ads/models/ad';
 import { AuthService } from '../../../auth/services/auth';
+
 import { Header } from '../../../../shared/components/layout/header/header';
 
 @Component({
@@ -14,7 +15,9 @@ import { Header } from '../../../../shared/components/layout/header/header';
 })
 export class Landing implements OnInit {
   private readonly router = inject(Router);
+
   private readonly authService = inject(AuthService);
+
   private readonly adsService = inject(AdsService);
 
   readonly isLoggedIn = this.authService.isLoggedIn;
@@ -22,7 +25,9 @@ export class Landing implements OnInit {
   readonly searchTerm = signal('');
 
   readonly recentAds = signal<Ad[]>([]);
+
   readonly isLoadingAds = signal(true);
+
   readonly adsError = signal(false);
 
   readonly categories = [
@@ -57,13 +62,18 @@ export class Landing implements OnInit {
     this.isLoadingAds.set(true);
     this.adsError.set(false);
 
-    this.adsService.getAds(0, 4).subscribe({
+    this.adsService.getAds(0, 4, undefined, undefined, undefined, 'DISPONIVEL').subscribe({
       next: (response) => {
         this.recentAds.set(response.content);
+
         this.isLoadingAds.set(false);
       },
 
-      error: () => {
+      error: (error) => {
+        console.error('Erro ao carregar anúncios recentes:', error);
+
+        this.recentAds.set([]);
+
         this.adsError.set(true);
         this.isLoadingAds.set(false);
       },

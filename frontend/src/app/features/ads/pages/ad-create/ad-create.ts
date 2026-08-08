@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { AdsService } from '../../services/ads';
 import { CategoriesService } from '../../services/categories';
+import { AdImagesService } from '../../services/ad-images';
 
 import { AdRequest, AdType } from '../../models/ad-request';
 
@@ -24,6 +25,8 @@ export class AdCreate {
   private readonly adsService = inject(AdsService);
 
   private readonly categoriesService = inject(CategoriesService);
+
+  private readonly adImagesService = inject(AdImagesService);
 
   private readonly router = inject(Router);
 
@@ -49,6 +52,8 @@ export class AdCreate {
     preco: [null as number | null],
 
     categoryId: [null as number | null, [Validators.required]],
+
+    imageUrl: ['', [Validators.required, Validators.maxLength(500)]],
   });
 
   constructor() {
@@ -82,6 +87,7 @@ export class AdCreate {
 
   loadCategories(): void {
     this.isLoadingCategories.set(true);
+
     this.categoriesError.set(false);
 
     this.categoriesService.getCategories().subscribe({
@@ -133,9 +139,35 @@ export class AdCreate {
 
     this.adsService.createAd(request).subscribe({
       next: (createdAd) => {
-        this.isSubmitting.set(false);
+        const imageUrl = value.imageUrl.trim();
 
-        this.router.navigate(['/ads', createdAd.id]);
+        this.adImagesService
+          .create({
+            anuncioId: createdAd.id,
+
+            url: imageUrl,
+
+            ordem: 0,
+          })
+          .subscribe({
+            next: () => {
+              this.isSubmitting.set(false);
+
+              this.router.navigate(['/ads', createdAd.id]);
+            },
+
+            error: (error) => {
+              console.error('Erro ao cadastrar imagem:', error);
+
+              this.isSubmitting.set(false);
+
+              this.hasError.set(true);
+
+              this.errorMessage.set(
+                'O anúncio foi criado, mas não foi possível cadastrar a imagem.',
+              );
+            },
+          });
       },
 
       error: (error) => {

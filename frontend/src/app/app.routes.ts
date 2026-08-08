@@ -77,6 +77,7 @@ export const routes: Routes = [
   },
 
   // Perfil
+
   {
     path: 'profile',
     canActivate: [authGuard],
