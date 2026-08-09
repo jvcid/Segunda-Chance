@@ -1,9 +1,16 @@
 <header class="site-header">
   <div class="header-container">
-    <div class="header-brand">
+    <!-- LOGO -->
+    <a
+      routerLink="/welcome"
+      class="header-brand"
+      aria-label="Segunda Chance - Início"
+      (click)="closeMobileMenu()"
+    >
       <img src="/brand/header-symbol.png" alt="Segunda Chance" class="header-logo" />
-    </div>
+    </a>
 
+    <!-- NAVEGAÇÃO DESKTOP -->
     <nav class="navigation" aria-label="Navegação principal">
       <a routerLink="/welcome" routerLinkActive="active"> Início </a>
 
@@ -20,6 +27,7 @@
       }
     </nav>
 
+    <!-- AÇÕES -->
     <div class="header-actions">
       @if (isLoggedIn()) {
         <a routerLink="/ads/create" class="btn-primary"> Anunciar item </a>
@@ -30,6 +38,52 @@
 
         <a routerLink="/register" class="btn-primary"> Criar conta </a>
       }
+
+      <!-- BOTÃO MOBILE -->
+      <button
+        type="button"
+        class="mobile-menu-button"
+        aria-label="Abrir menu de navegação"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+      >
+        @if (isMobileMenuOpen()) {
+          ✕
+        } @else {
+          ☰
+        }
+      </button>
     </div>
   </div>
+
+  <!-- MENU MOBILE -->
+  @if (isMobileMenuOpen()) {
+    <nav class="mobile-navigation" aria-label="Navegação mobile">
+      <a routerLink="/welcome" routerLinkActive="active" (click)="closeMobileMenu()"> Início </a>
+
+      <a routerLink="/ads" routerLinkActive="active" (click)="closeMobileMenu()"> Explorar </a>
+
+      @if (isLoggedIn()) {
+        <a routerLink="/my-ads" routerLinkActive="active" (click)="closeMobileMenu()">
+          Meus anúncios
+        </a>
+
+        <a routerLink="/requests" routerLinkActive="active" (click)="closeMobileMenu()">
+          Solicitações
+        </a>
+
+        <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()"> Perfil </a>
+
+        <a routerLink="/ads/create" (click)="closeMobileMenu()"> Anunciar item </a>
+
+        <button type="button" (click)="logout()">Sair</button>
+      } @else {
+        <a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()"> Sobre </a>
+
+        <a routerLink="/login" (click)="closeMobileMenu()"> Entrar </a>
+
+        <a routerLink="/register" (click)="closeMobileMenu()"> Criar conta </a>
+      }
+    </nav>
+  }
 </header>
