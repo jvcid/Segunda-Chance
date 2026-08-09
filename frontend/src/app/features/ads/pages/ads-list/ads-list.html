@@ -2,27 +2,30 @@
 
 <main class="ads-page">
   <!-- HERO / BUSCA -->
-  <section class="ads-hero">
+  <section class="search-section">
     <div class="container">
-      <span class="eyebrow"> Explore a comunidade </span>
+      <div class="search-content">
+        <span class="eyebrow">Explore a comunidade</span>
 
-      <h1>Encontre algo que possa ganhar uma nova história.</h1>
+        <h1>Encontre algo que possa ganhar uma nova história.</h1>
 
-      <p>
-        Explore livros, eletrônicos, materiais acadêmicos e outros itens anunciados pela comunidade.
-      </p>
+        <p>
+          Explore livros, eletrônicos, materiais acadêmicos e outros itens anunciados pela
+          comunidade.
+        </p>
 
-      <form class="search-bar" (submit)="$event.preventDefault(); search(searchInput.value)">
-        <input
-          #searchInput
-          type="search"
-          [value]="searchTerm()"
-          placeholder="Buscar por título..."
-          aria-label="Buscar anúncios"
-        />
+        <form class="search-bar" (submit)="$event.preventDefault(); search(searchInput.value)">
+          <input
+            #searchInput
+            type="search"
+            [value]="searchTerm()"
+            placeholder="Buscar por título..."
+            aria-label="Buscar anúncios"
+          />
 
-        <button type="submit">Buscar</button>
-      </form>
+          <button type="submit">Buscar</button>
+        </form>
+      </div>
     </div>
   </section>
 
@@ -32,8 +35,7 @@
       <div class="filters-panel">
         <div class="filters-header">
           <div>
-            <span class="eyebrow"> Refine sua busca </span>
-
+            <span class="eyebrow">Refine sua busca</span>
             <h2>Filtros</h2>
           </div>
 
@@ -107,8 +109,13 @@
     </div>
   </section>
 
-  <!-- LISTAGEM -->
-  <section class="ads-section">
+  <!-- RESULTADOS -->
+  <!--
+    IMPORTANTE:
+    Esta classe deve permanecer "results-section",
+    pois é esse seletor que existe no ads-list.scss.
+  -->
+  <section class="results-section">
     <div class="container">
       <div class="section-heading">
         <div>
