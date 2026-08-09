@@ -1,20 +1,14 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
+
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/favicon.ico",
-          "/index.csr.html",
-          "/index.html",
-          "/manifest.webmanifest",
-          "/*.css",
-          "/*.js"
-        ]
+        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
       }
     },
     {
@@ -26,10 +20,14 @@
       }
     }
   ],
+
   "dataGroups": [
     {
       "name": "public-ads-api",
-      "urls": ["http://localhost:8080/api/anuncios**", "http://localhost:8080/api/categories**"],
+      "urls": [
+        "https://segunda-chance-api.onrender.com/api/anuncios**",
+        "https://segunda-chance-api.onrender.com/api/categories**"
+      ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 50,
@@ -38,5 +36,6 @@
       }
     }
   ],
-  "navigationUrls": ["/**", "!/**/*.*", "!/**/*__*", "!/**/*__*/**"]
+
+  "navigationUrls": ["/**", "!/**/*.*", "!/**/__*", "!/**/*__*/**"]
 }

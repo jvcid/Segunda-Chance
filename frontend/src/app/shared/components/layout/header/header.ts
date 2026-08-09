@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../../../features/auth/services/auth';
@@ -15,8 +15,21 @@ export class Header {
 
   readonly isLoggedIn = this.authService.isLoggedIn;
 
+  readonly isMobileMenuOpen = signal(false);
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update((value) => !value);
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
+  }
+
   logout(): void {
+    this.closeMobileMenu();
+
     this.authService.logout();
+
     this.router.navigate(['/']);
   }
 }

@@ -1,10 +1,10 @@
-<app-header />
+<app-header></app-header>
 
 <main class="ads-page">
-  <!-- HERO -->
+  <!-- HERO / BUSCA -->
   <section class="ads-hero">
     <div class="container">
-      <span class="eyebrow">Marketplace da comunidade</span>
+      <span class="eyebrow"> Explore a comunidade </span>
 
       <h1>Encontre algo que possa ganhar uma nova história.</h1>
 
@@ -32,7 +32,7 @@
       <div class="filters-panel">
         <div class="filters-header">
           <div>
-            <span class="eyebrow">Refine sua busca</span>
+            <span class="eyebrow"> Refine sua busca </span>
 
             <h2>Filtros</h2>
           </div>
@@ -44,7 +44,7 @@
           }
         </div>
 
-        <!-- Categoria -->
+        <!-- CATEGORIA -->
         <div class="filters-row">
           <span class="filter-label"> Categoria </span>
 
@@ -77,7 +77,7 @@
           </div>
         </div>
 
-        <!-- Tipo -->
+        <!-- TIPO -->
         <div class="filters-row">
           <span class="filter-label"> Tipo </span>
 
@@ -107,12 +107,12 @@
     </div>
   </section>
 
-  <!-- RESULTADOS -->
-  <section class="results-section">
+  <!-- LISTAGEM -->
+  <section class="ads-section">
     <div class="container">
       <div class="section-heading">
         <div>
-          <span class="eyebrow"> Explorar </span>
+          <span class="eyebrow"> Marketplace </span>
 
           <h2>Anúncios disponíveis</h2>
         </div>
@@ -160,6 +160,7 @@
               (click)="openAd(ad.id)"
               (keyup.enter)="openAd(ad.id)"
             >
+              <!-- IMAGEM -->
               <div class="ad-image">
                 @if (ad.imagemPrincipalUrl) {
                   <img [src]="ad.imagemPrincipalUrl" [alt]="ad.titulo" />
@@ -170,6 +171,7 @@
                 }
               </div>
 
+              <!-- CONTEÚDO -->
               <div class="ad-content">
                 <div class="ad-meta">
                   <span class="category">
@@ -208,7 +210,12 @@
               Anterior
             </button>
 
-            <span> Página {{ currentPage() + 1 }} de {{ totalPages() }} </span>
+            <span>
+              Página
+              {{ currentPage() + 1 }}
+              de
+              {{ totalPages() }}
+            </span>
 
             <button
               type="button"
