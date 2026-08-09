@@ -222,6 +222,45 @@ Entre as categorias utilizadas estão:
 
 O sistema possui fluxo de solicitações relacionado ao interesse dos usuários nos itens anunciados.
 
+## Progressive Web App (PWA)
+
+O frontend também funciona como uma **Progressive Web App**, com suporte a:
+
+- manifesto web (`manifest.webmanifest`);
+- Service Worker do Angular;
+- execução em modo `standalone`;
+- instalação da aplicação em dispositivos compatíveis;
+- ícones PWA em múltiplas resoluções;
+- ícones com suporte `maskable`;
+- cache do shell principal da aplicação;
+- cache de imagens e assets estáticos;
+- cache de anúncios públicos previamente carregados;
+- cache das categorias públicas;
+- estratégia `freshness`, priorizando dados atualizados da API;
+- fallback para dados públicos armazenados em cache quando a rede estiver indisponível ou lenta;
+- atualização automática dos arquivos versionados pelo Service Worker;
+- navegação SPA compatível com o deploy na Vercel.
+
+## Experiência Mobile
+
+A interface possui comportamento específico para dispositivos móveis e tablets, incluindo:
+
+- layout responsivo;
+- reorganização de grids para uma coluna em telas menores;
+- formulários adaptáveis;
+- cards responsivos;
+- filtros adaptáveis;
+- paginação responsiva;
+- menu de navegação mobile;
+- botão de menu com abertura e fechamento controlados por Angular Signals;
+- navegação mobile diferente para usuários autenticados e não autenticados;
+- acesso mobile a Início, Explorar, Meus anúncios, Solicitações, Perfil e publicação de anúncios;
+- acesso mobile a Login, Cadastro e Sobre para usuários não autenticados;
+- fechamento automático do menu após a navegação;
+- botão de menu com área de toque adequada;
+- adaptação dos botões do cabeçalho em telas pequenas;
+- preservação das funcionalidades de cadastro, login, exploração e publicação em dispositivos móveis.
+
 ---
 
 # 5. Backend
@@ -337,7 +376,13 @@ Entre os recursos utilizados estão:
 - estados de erro;
 - respostas vazias;
 - paginação;
-- filtros.
+- filtros;
+- Angular Service Worker;
+- manifesto PWA;
+- cache de aplicação e dados públicos;
+- layout responsivo;
+- navegação mobile;
+- deploy SPA com fallback de rotas na Vercel.
 
 Organização conceitual:
 
@@ -810,19 +855,496 @@ Durante o desenvolvimento também foram utilizadas:
 
 # 14. PWA e Responsividade
 
-O edital exige que o frontend funcione como uma PWA instalável e possua experiência responsiva entre desktop e dispositivos móveis.
+O frontend possui implementação completa de **Progressive Web App (PWA)** e comportamento responsivo para desktop, tablets e dispositivos móveis.
 
-O frontend foi concebido para a experiência web/PWA e a documentação do projeto contempla a validação da aplicação em desktop e mobile.
+A implementação foi verificada tanto nos arquivos-fonte quanto no build de produção presente no frontend.
 
-Para a entrega final, a configuração de produção deve manter:
+## 14.1 Manifesto da aplicação
 
-- manifesto web válido;
-- Service Worker da aplicação;
-- possibilidade de instalação;
-- adaptação da interface para telas menores;
-- demonstração da experiência mobile no vídeo.
+O projeto possui:
 
-Esses itens devem ser demonstrados diretamente no build final durante a apresentação prática.
+```text
+public/manifest.webmanifest
+```
+
+O manifesto define a identidade e o comportamento da aplicação instalada:
+
+```json
+{
+  "name": "Segunda Chance",
+  "short_name": "2ª Chance",
+  "lang": "pt-BR",
+  "start_url": "/welcome",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4faff",
+  "theme_color": "#0f7dbb"
+}
+```
+
+O manifesto é referenciado diretamente pelo `index.html`:
+
+```html
+<link rel="manifest" href="manifest.webmanifest" />
+```
+
+Também são definidos:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0f7dbb" />
+```
+
+Isso permite que a aplicação tenha identidade própria quando executada em dispositivos compatíveis e mantenha comportamento adequado em telas móveis.
+
+## 14.2 Ícones da PWA
+
+O projeto possui ícones em diferentes resoluções:
+
+```text
+72x72
+96x96
+128x128
+144x144
+152x152
+192x192
+384x384
+512x512
+```
+
+Os ícones são declarados no manifesto como:
+
+```json
+"purpose": "any maskable"
+```
+
+Dessa forma, podem ser utilizados tanto como ícones convencionais quanto em interfaces que aplicam máscaras específicas ao ícone instalado.
+
+Os tamanhos `192x192` e `512x512`, utilizados pelos mecanismos de instalação de PWA, estão presentes no projeto.
+
+## 14.3 Service Worker
+
+O frontend utiliza:
+
+```text
+@angular/service-worker
+```
+
+A dependência está integrada ao Angular e o Service Worker é registrado através da configuração principal da aplicação:
+
+```typescript
+provideServiceWorker('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  registrationStrategy: 'registerWhenStable:30000'
+})
+```
+
+Com isso:
+
+```text
+Desenvolvimento
+    |
+    v
+Service Worker desabilitado
+
+Produção
+    |
+    v
+Service Worker habilitado
+```
+
+O registro é realizado apenas fora do modo de desenvolvimento, evitando interferência do cache durante o desenvolvimento local.
+
+## 14.4 Configuração do build PWA
+
+O `angular.json` contém a configuração de Service Worker no build de produção:
+
+```json
+"production": {
+  "serviceWorker": "ngsw-config.json"
+}
+```
+
+O diretório `public` também é incluído entre os assets da aplicação.
+
+O build de produção presente no projeto confirma a geração de arquivos como:
+
+```text
+ngsw-worker.js
+ngsw.json
+safety-worker.js
+worker-basic.min.js
+manifest.webmanifest
+```
+
+Portanto, a configuração PWA não está presente apenas no código-fonte: ela já é processada pelo build do Angular.
+
+## 14.5 Cache do shell da aplicação
+
+O arquivo:
+
+```text
+ngsw-config.json
+```
+
+define dois grupos principais de assets.
+
+### Arquivos essenciais
+
+O grupo `app` utiliza:
+
+```json
+"installMode": "prefetch",
+"updateMode": "prefetch"
+```
+
+Ele inclui arquivos essenciais como:
+
+```text
+index.html
+manifest.webmanifest
+favicon.ico
+CSS
+JavaScript
+```
+
+Esses recursos são carregados antecipadamente pelo Service Worker.
+
+### Imagens e assets
+
+O grupo `assets` utiliza:
+
+```json
+"installMode": "lazy",
+"updateMode": "prefetch"
+```
+
+Ele gerencia recursos como:
+
+```text
+PNG
+JPG
+SVG
+WebP
+fontes
+ícones
+imagens da identidade visual
+```
+
+Assim, recursos mais pesados podem ser armazenados conforme são utilizados, enquanto novas versões podem ser atualizadas pelo Service Worker.
+
+## 14.6 Cache dos dados públicos
+
+A PWA também possui uma estratégia específica para dados públicos da API de produção.
+
+As rotas configuradas são:
+
+```text
+https://segunda-chance-api.onrender.com/api/anuncios**
+https://segunda-chance-api.onrender.com/api/categories**
+```
+
+A configuração utilizada é:
+
+```json
+{
+  "strategy": "freshness",
+  "maxSize": 50,
+  "maxAge": "1h",
+  "timeout": "3s"
+}
+```
+
+O comportamento esperado pode ser representado por:
+
+```text
+Usuário solicita os dados
+        |
+        v
+Service Worker consulta a API
+        |
+        +-------------------------------+
+        |                               |
+        v                               v
+API responde                      API indisponível
+normalmente                       ou lenta
+        |                               |
+        v                               v
+Dados atualizados                 Cache disponível
+        |                               |
+        +---------------+---------------+
+                        |
+                        v
+                  Interface Angular
+```
+
+A estratégia prioriza informações novas da API, mas permite o reaproveitamento dos dados públicos previamente carregados quando necessário.
+
+O build atual também confirma que as URLs de produção foram incorporadas ao `ngsw.json`, sem dependência de `localhost:8080` para o cache da versão publicada.
+
+## 14.7 Instalação
+
+O conjunto:
+
+```text
+manifest.webmanifest
++
+Service Worker
++
+HTTPS da Vercel
++
+ícones PWA
++
+display: standalone
+```
+
+fornece a estrutura necessária para que o navegador apresente a aplicação como PWA instalável em dispositivos compatíveis.
+
+Quando instalada, a aplicação utiliza:
+
+```json
+"display": "standalone"
+```
+
+fazendo com que seja aberta em uma janela com aparência de aplicativo, sem depender da interface convencional de uma aba do navegador.
+
+A rota inicial definida é:
+
+```text
+/welcome
+```
+
+que corresponde a uma rota existente da aplicação.
+
+## 14.8 Navegação SPA na Vercel
+
+Como o Angular utiliza roteamento do lado do cliente, o frontend possui:
+
+```text
+vercel.json
+```
+
+com:
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+Essa configuração faz com que acessos diretos a rotas como:
+
+```text
+/welcome
+/ads
+/login
+/register
+/profile
+/requests
+/my-ads
+```
+
+sejam direcionados ao Angular, que então resolve a rota correspondente.
+
+Isso também é importante para a PWA, já que sua rota inicial é `/welcome`.
+
+## 14.9 Sistema Mobile
+
+A versão mobile não consiste apenas na redução visual da interface desktop.
+
+O frontend possui regras de layout específicas para telas menores em diferentes componentes e páginas.
+
+Entre os breakpoints utilizados estão valores como:
+
+```text
+1100px
+900px
+850px
+800px
+750px
+620px
+600px
+560px
+520px
+500px
+```
+
+Em telas menores, diferentes partes da aplicação passam a utilizar:
+
+```scss
+grid-template-columns: 1fr;
+```
+
+permitindo que conteúdos que aparecem lado a lado no desktop sejam apresentados verticalmente no celular.
+
+## 14.10 Menu mobile
+
+Em telas de até `900px`, a navegação desktop é substituída por um botão próprio de menu.
+
+O estado do menu é controlado por Angular Signals:
+
+```typescript
+readonly isMobileMenuOpen = signal(false);
+
+toggleMobileMenu(): void {
+  this.isMobileMenuOpen.update((value) => !value);
+}
+
+closeMobileMenu(): void {
+  this.isMobileMenuOpen.set(false);
+}
+```
+
+O cabeçalho disponibiliza um botão:
+
+```text
+☰
+```
+
+e, quando aberto:
+
+```text
+✕
+```
+
+O botão utiliza também o estado:
+
+```html
+aria-expanded
+```
+
+para indicar programaticamente se a navegação está aberta.
+
+## 14.11 Navegação mobile autenticada
+
+Para usuários autenticados, o menu mobile disponibiliza:
+
+```text
+Início
+Explorar
+Meus anúncios
+Solicitações
+Perfil
+Anunciar item
+Sair
+```
+
+Assim, as funcionalidades principais continuam acessíveis mesmo quando a navegação horizontal do desktop é removida.
+
+## 14.12 Navegação mobile pública
+
+Para usuários não autenticados, o menu disponibiliza:
+
+```text
+Início
+Explorar
+Sobre
+Entrar
+Criar conta
+```
+
+O menu também é fechado automaticamente quando uma rota é escolhida.
+
+## 14.13 Ajustes para telas pequenas
+
+Em telas menores, o cabeçalho reduz:
+
+- largura do logotipo;
+- espaçamento interno;
+- quantidade de ações visíveis diretamente no header.
+
+Em dispositivos pequenos, os botões desktop do cabeçalho são ocultados e as ações passam a ser concentradas no menu mobile.
+
+O botão de menu utiliza:
+
+```scss
+width: 44px;
+height: 44px;
+```
+
+e os itens do menu possuem altura mínima de:
+
+```scss
+min-height: 46px;
+```
+
+criando áreas de interação adequadas para toque.
+
+## 14.14 Responsividade das funcionalidades
+
+A adaptação não se restringe ao cabeçalho.
+
+Existem regras responsivas nas principais áreas do frontend, incluindo:
+
+- Landing Page;
+- login;
+- cadastro;
+- exploração de anúncios;
+- pesquisa;
+- filtros;
+- cards;
+- criação de anúncio;
+- edição de anúncio;
+- detalhes do anúncio;
+- Meus Anúncios;
+- solicitações;
+- perfil;
+- edição de perfil;
+- página Sobre;
+- página de erro;
+- cabeçalho.
+
+Isso permite que o fluxo principal continue utilizável em telas reduzidas:
+
+```text
+Cadastro
+   |
+   v
+Login
+   |
+   v
+Explorar
+   |
+   +-------------------+
+   |                   |
+   v                   v
+Detalhes          Anunciar item
+   |                   |
+   v                   v
+Solicitação       Meus anúncios
+```
+
+## 14.15 Situação final da implementação
+
+A versão atual contém:
+
+| Recurso | Situação |
+|---|---|
+| Manifesto PWA | Implementado |
+| Service Worker | Implementado |
+| Registro do Service Worker | Implementado |
+| Build de produção com PWA | Implementado |
+| Ícones 192x192 e 512x512 | Implementados |
+| Ícones maskable | Implementados |
+| `display: standalone` | Implementado |
+| Cache do app shell | Implementado |
+| Cache de assets | Implementado |
+| Cache de anúncios públicos | Implementado |
+| Cache de categorias | Implementado |
+| API de produção no cache | Configurada |
+| SPA fallback da Vercel | Implementado |
+| Layout responsivo | Implementado |
+| Menu mobile | Implementado |
+| Navegação autenticada mobile | Implementada |
+| Navegação pública mobile | Implementada |
+| Formulários responsivos | Implementados |
+| Cards e grids responsivos | Implementados |
 
 ---
 
@@ -867,7 +1389,12 @@ Esses itens devem ser demonstrados diretamente no build final durante a apresent
 | Filtros e pesquisa | Implementados |
 | Paginação | Implementada |
 | Deploy | Vercel |
-| PWA e responsividade | Devem ser demonstradas no build final conforme exigência do edital |
+| PWA instalável | Implementada com manifesto, Service Worker, ícones e modo standalone |
+| Service Worker | Implementado com Angular Service Worker |
+| Responsividade | Implementada em desktop, tablet e mobile |
+| Navegação mobile | Implementada com menu responsivo |
+| Cache offline | Implementado para shell, assets e dados públicos previamente carregados |
+| Deploy SPA | Vercel com fallback de rotas para `index.html` |
 
 ## Deploy
 
@@ -1056,6 +1583,10 @@ A aplicação integra:
 
 ```text
 Angular
++
+Angular Service Worker / PWA
++
+Interface Mobile Responsiva
 +
 Spring Boot
 +
