@@ -30,6 +30,9 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Column(name = "banned", nullable = false)
+    private boolean banned = false;
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -113,5 +116,13 @@ public class User {
 
     public void setSolicitacoes(List<Solicitacao> solicitacoes) {
         this.solicitacoes = solicitacoes;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 }

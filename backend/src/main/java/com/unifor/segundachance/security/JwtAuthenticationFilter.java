@@ -47,12 +47,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtService.extractUsername(token);
 
             if (email != null
-                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    && SecurityContextHolder
+                    .getContext()
+                    .getAuthentication() == null) {
 
                 UserDetails userDetails =
-                        userDetailsService.loadUserByUsername(email);
+                        userDetailsService
+                                .loadUserByUsername(email);
 
-                if (jwtService.isTokenValid(token, userDetails)) {
+                boolean accountValid =
+                        userDetails.isEnabled()
+                                && userDetails.isAccountNonLocked()
+                                && userDetails.isAccountNonExpired()
+                                && userDetails.isCredentialsNonExpired();
+
+                if (jwtService.isTokenValid(token, userDetails)
+                        && accountValid) {
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
@@ -67,10 +77,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
 
                     SecurityContext context =
-                            SecurityContextHolder.createEmptyContext();
+                            SecurityContextHolder
+                                    .createEmptyContext();
 
                     context.setAuthentication(authentication);
-                    SecurityContextHolder.setContext(context);
+
+                    SecurityContextHolder
+                            .setContext(context);
                 }
             }
         } catch (Exception ignored) {

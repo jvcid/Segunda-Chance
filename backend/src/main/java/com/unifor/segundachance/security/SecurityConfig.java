@@ -103,6 +103,9 @@ public class SecurityConfig {
                                 "/api/categories/*"
                         ).permitAll()
 
+                        //permições de ADMIN
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
                         // Restante protegido
                         .anyRequest().authenticated()
                 )
